@@ -1,0 +1,2939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Obliga — Life's plans, made easy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f7f6f3;color:#1a1a18;min-height:100vh}
+
+/* ── ONBOARDING OVERLAY (Pillar 1) ── */
+#onboarding{position:fixed;inset:0;background:#fff;z-index:300;display:flex;align-items:center;justify-content:center;padding:1.5rem;-webkit-overflow-scrolling:touch;touch-action:manipulation}
+#onboarding.hidden{display:none!important;pointer-events:none;visibility:hidden}
+.ob-card{max-width:400px;width:100%;text-align:center}
+.ob-logo{font-family:'DM Serif Display',serif;font-size:32px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px}
+.ob-tag{font-size:14px;color:#888;margin-bottom:2rem}
+.ob-steps{display:flex;gap:6px;justify-content:center;margin-bottom:2rem}
+.ob-step-dot{width:8px;height:8px;border-radius:50%;background:#e8e5df;transition:background .2s}
+.ob-step-dot.active{background:#1a1a18}
+.ob-slide{display:none}
+.ob-slide.active{display:block}
+.ob-icon{font-size:48px;margin-bottom:1rem}
+.ob-title{font-size:18px;font-weight:500;margin-bottom:8px}
+.ob-desc{font-size:14px;color:#666;line-height:1.6;margin-bottom:1.5rem}
+.ob-highlight{background:#f0f9ff;border:1px solid #0ea5e9;border-radius:10px;padding:12px 16px;font-size:13px;color:#0369a1;margin-bottom:1.5rem;text-align:left}
+.ob-btn{width:100%;padding:14px;border-radius:10px;border:none;background:#1a1a18;color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:52px;display:block}
+.ob-btn:hover{background:#333}.ob-btn:active{background:#444;transform:scale(0.98)}
+.ob-skip{font-size:14px;color:#aaa;cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;padding:12px 24px;min-height:44px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;display:inline-block}
+.ob-skip:hover{color:#555}
+.ob-name-input{width:100%;font-family:'DM Sans',sans-serif;font-size:15px;padding:10px 12px;border:1px solid #e8e5df;border-radius:8px;background:#f9f8f5;color:#1a1a18;outline:none;margin-bottom:1rem}
+.ob-name-input:focus{border-color:#0ea5e9}
+
+/* ── APP ── */
+.app{max-width:760px;margin:0 auto;padding:2rem 1.25rem 4rem}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.logo{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;letter-spacing:-.02em}
+.tagline{font-size:12px;color:#888;margin-top:2px}
+
+/* ── DAILY DIGEST BANNER (Pillar 3) ── */
+.digest{background:#fff;border:1px solid #e8e5df;border-radius:12px;padding:14px 16px;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:12px}
+.digest-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.digest-body{flex:1}
+.digest-title{font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:2px}
+.digest-text{font-size:12px;color:#666;line-height:1.5}
+.digest-close{font-size:18px;color:#ccc;cursor:pointer;border:none;background:none;padding:0;flex-shrink:0}
+.digest-close:hover{color:#888}
+.digest.hidden{display:none}
+
+/* ── STREAK BADGE (Pillar 3) ── */
+.streak-badge{display:inline-flex;align-items:center;gap:5px;background:#fff7ed;border:1px solid #fed7aa;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500;color:#c2410c;cursor:pointer}
+.streak-badge:hover{background:#ffedd5}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.stat{background:#fff;border:1px solid #e8e5df;border-radius:10px;padding:12px 14px;cursor:default}
+.stat-num{display:block;font-size:22px;font-weight:300}
+.stat-num.danger{color:#dc2626}
+.stat-num.rain{color:#0369a1}
+.stat-num.streak{color:#c2410c}
+.stat-label{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
+
+/* ── RAIN CHECK HERO BANNER (Pillar 2) ── */
+.rc-hero{background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border:1px solid #bae6fd;border-radius:12px;padding:14px 16px;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px}
+.rc-hero-text{flex:1}
+.rc-hero-title{font-size:13px;font-weight:500;color:#0369a1;margin-bottom:2px}
+.rc-hero-sub{font-size:12px;color:#0369a1;opacity:.8}
+.rc-hero-btn{padding:7px 14px;border-radius:8px;border:none;background:#0ea5e9;color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.rc-hero-btn:hover{background:#0284c7}
+
+/* ── ADD FORM ── */
+.add-form{background:#fff;border:1px solid #e8e5df;border-radius:12px;padding:14px;margin-bottom:1.25rem}
+.add-input{width:100%;font-family:'DM Sans',sans-serif;font-size:15px;padding:8px 4px;border:none;outline:none;background:transparent;color:#1a1a18;border-bottom:1px solid #e8e5df;margin-bottom:10px}
+.add-input::placeholder{color:#bbb}
+.add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.add-row input[type=date],.add-row select{font-family:'DM Sans',sans-serif;font-size:13px;padding:6px 10px;border:1px solid #e8e5df;border-radius:7px;background:#f9f8f5;color:#1a1a18;outline:none}
+.add-btn{margin-left:auto;padding:7px 20px;border-radius:7px;border:none;background:#1a1a18;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
+.add-btn:hover{background:#333}
+
+/* ── FILTERS ── */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.filter-btn{font-size:12px;font-family:'DM Sans',sans-serif;padding:5px 13px;border-radius:20px;border:1px solid #e0ddd8;background:transparent;color:#666;cursor:pointer}
+.filter-btn.active{background:#1a1a18;color:#fff;border-color:#1a1a18}
+.filter-btn.rain-active{background:#0369a1;color:#fff;border-color:#0369a1}
+.section-label{font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.section-label.rain-label{color:#0369a1}
+
+/* ── ITEMS ── */
+.item-wrap{position:relative;margin-bottom:6px;border-radius:10px;overflow:hidden}
+.swipe-actions{position:absolute;right:0;top:0;bottom:0;display:flex;align-items:stretch;border-radius:0 10px 10px 0;overflow:hidden;z-index:0}
+.action-btn{width:36px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:15px;transition:background .15s;padding:0}
+.action-rain{background:#0ea5e9;color:#fff}
+.action-rain:hover{background:#0284c7}
+.action-delete{background:#f87171;color:#fff}
+.action-delete:hover{background:#ef4444}
+.item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:#fff;border:1px solid #e8e5df;border-radius:10px;position:relative;z-index:1;transition:transform .22s cubic-bezier(.4,0,.2,1)}
+.item-wrap:hover .item{transform:translateX(-72px)}
+.item.rain-checked{border-left:3px solid #0ea5e9;background:#f0f9ff}
+.item.done{opacity:.45}
+.item.done .item-title{text-decoration:line-through;color:#999}
+.check{width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;background:transparent;cursor:pointer;flex-shrink:0;margin-top:2px;position:relative;transition:all .12s}
+.check:hover{border-color:#888}
+.check.checked{background:#1a1a18;border-color:#1a1a18}
+.check.checked::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:9px;border:1.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+.item-body{flex:1;min-width:0}
+.item-title{font-size:14px;color:#1a1a18}
+.item-meta{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap}
+.cat-badge{font-size:11px;padding:2px 7px;border-radius:10px;font-weight:500}
+.due-label{font-size:12px;color:#999}
+.due-label.overdue{color:#dc2626}
+.due-label.soon{color:#d97706}
+.pri-badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500}
+.pri-high{background:#fef2f2;color:#dc2626}
+.pri-low{background:#f5f5f4;color:#aaa}
+.rain-badge{font-size:11px;padding:2px 7px;border-radius:10px;background:#e0f2fe;color:#0369a1;font-weight:500}
+.rain-note-text{font-size:12px;color:#0369a1;font-style:italic;margin-top:3px}
+.empty{text-align:center;padding:3rem;color:#bbb;font-size:14px}
+
+/* ── WIN MOMENT (Pillar 1 & 3) ── */
+.win-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(60px);background:#1a1a18;color:#fff;font-size:13px;padding:10px 18px;border-radius:20px;opacity:0;transition:all .35s ease;z-index:200;pointer-events:none;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.win-toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ── RAIN CHECK MODAL ── */
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.modal-backdrop.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:400px}
+.modal-hdr{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.modal-title{font-family:'DM Serif Display',serif;font-size:20px}
+.modal-sub{font-size:13px;color:#888;margin-bottom:1.25rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal label{display:block;font-size:11px;font-weight:500;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.modal input[type=date],.modal input[type=email],.modal textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 11px;border:1px solid #e8e5df;border-radius:8px;background:#f9f8f5;color:#1a1a18;outline:none;margin-bottom:1rem;display:block}
+.modal input:focus,.modal textarea:focus{border-color:#0ea5e9}
+.modal textarea{resize:none;height:72px;line-height:1.5}
+.remind-row{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;cursor:pointer}
+.remind-row input[type=checkbox]{width:15px;height:15px;accent-color:#0ea5e9;cursor:pointer;flex-shrink:0}
+.remind-row span{font-size:13px;color:#555}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.btn-cancel{padding:8px 16px;border-radius:8px;border:1px solid #e8e5df;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;color:#666}
+.btn-cancel:hover{background:#f5f4f0}
+.btn-confirm{padding:8px 18px;border-radius:8px;border:none;background:#0ea5e9;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
+.btn-confirm:hover{background:#0284c7}
+.slot-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px 16px;border:1px solid #e8e5df;border-radius:10px;background:#fff;cursor:pointer;font-size:14px;font-family:'DM Sans',sans-serif;margin-bottom:6px;transition:border-color .15s}
+.slot-btn:hover{border-color:#0ea5e9}
+
+/* ── INVITE MODAL (Pillar 4) ── */
+.invite-modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:380px}
+.invite-link{background:#f9f8f5;border:1px solid #e8e5df;border-radius:8px;padding:10px 12px;font-size:13px;color:#555;margin:10px 0;word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.copy-btn{padding:5px 12px;border-radius:6px;border:none;background:#1a1a18;color:#fff;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
+.copy-btn:hover{background:#333}
+
+/* ── GIFT / REGISTRY MODAL ── */
+.gift-modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:420px}
+.gift-event-badge{display:inline-flex;align-items:center;gap:6px;background:#fdf2f8;border:1px solid #f9a8d4;border-radius:20px;padding:4px 12px;font-size:12px;color:#9d174d;font-weight:500;margin-bottom:1rem}
+.gift-section{display:none}
+.gift-section.active{display:block}
+.gift-q{font-size:15px;font-weight:500;color:#1a1a18;margin-bottom:6px}
+.gift-sub{font-size:13px;color:#888;margin-bottom:1.25rem;line-height:1.5}
+.gift-choice-row{display:flex;gap:8px;margin-bottom:1rem}
+.gift-choice{flex:1;padding:12px;border-radius:10px;border:1.5px solid #e8e5df;background:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s}
+.gift-choice:hover{border-color:#1a1a18;background:#f9f8f5}
+.gift-choice.yes{color:#15803d}
+.gift-choice.yes:hover{border-color:#15803d;background:#f0fdf4}
+.gift-choice.no{color:#dc2626}
+.gift-choice.no:hover{border-color:#dc2626;background:#fef2f2}
+.registry-input{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 11px;border:1px solid #e8e5df;border-radius:8px;background:#f9f8f5;color:#1a1a18;outline:none;margin-bottom:8px;display:block}
+.registry-input:focus{border-color:#9d174d}
+.registry-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.registry-preset{font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid #e8e5df;background:transparent;cursor:pointer;color:#666;font-family:'DM Sans',sans-serif;transition:all .12s}
+.registry-preset:hover{border-color:#9d174d;color:#9d174d;background:#fdf2f8}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.shop-card{border:1.5px solid #e8e5df;border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:all .15s;background:#fff;text-decoration:none;display:block}
+.shop-card:hover{border-color:#1a1a18;background:#f9f8f5}
+.shop-logo{font-size:20px;margin-bottom:4px}
+.shop-name{font-size:13px;font-weight:500;color:#1a1a18}
+.shop-desc{font-size:11px;color:#888;margin-top:2px}
+.registry-saved{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 12px;font-size:13px;color:#15803d;margin-bottom:1rem;display:none;align-items:center;gap:8px}
+.registry-saved.show{display:flex}
+
+/* ── SHOPPING MODAL ── */
+.shop-modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:460px;max-height:88vh;overflow-y:auto}
+.shop-tab-row{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.shop-tab{padding:6px 14px;border-radius:20px;border:1px solid #e8e5df;background:transparent;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:#666;transition:all .15s}
+.shop-tab.active{border-color:#1a1a18;background:#1a1a18;color:#fff}
+.shop-panel{display:none}
+.shop-panel.active{display:block}
+.shop-section-title{font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.shop-site-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem}
+.shop-site-card{border:1.5px solid #e8e5df;border-radius:10px;padding:12px 10px;cursor:pointer;text-align:center;background:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s}
+.shop-site-card:hover{border-color:#1a1a18;background:#f9f8f5;transform:translateY(-1px)}
+.shop-site-icon{font-size:22px}
+.shop-site-name{font-size:13px;font-weight:500;color:#1a1a18}
+.shop-site-desc{font-size:11px;color:#888}
+.shop-site-card.featured{border-color:#0ea5e9;background:#f0f9ff}
+.shop-site-card.featured .shop-site-name{color:#0369a1}
+.shop-badge-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:10px;background:#f0f9ff;color:#0369a1;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+.shop-badge-btn:hover{background:#e0f2fe}
+
+/* ── LIST BUILDER MODAL ── */
+.list-modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+.list-template-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem}
+.list-template-card{border:1.5px solid #e8e5df;border-radius:10px;padding:10px 12px;cursor:pointer;background:#fff;transition:all .15s;text-align:left}
+.list-template-card:hover{border-color:#1a1a18;background:#f9f8f5}
+.list-template-card.selected{border-color:#0ea5e9;background:#f0f9ff}
+.lt-icon{font-size:18px;margin-bottom:4px}
+.lt-name{font-size:13px;font-weight:500;color:#1a1a18}
+.lt-count{font-size:11px;color:#888}
+.list-builder-area{background:#f9f8f5;border-radius:10px;padding:12px;margin-bottom:1rem}
+.list-builder-title{font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.list-item-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.list-check{width:16px;height:16px;border-radius:4px;border:1.5px solid #ccc;flex-shrink:0;cursor:pointer;position:relative;background:#fff;transition:all .12s}
+.list-check.checked{background:#1a1a18;border-color:#1a1a18}
+.list-check.checked::after{content:'';position:absolute;left:3px;top:0px;width:4px;height:8px;border:1.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+.list-item-text{flex:1;font-size:13px;color:#1a1a18;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;padding:0}
+.list-item-text.done-text{text-decoration:line-through;color:#aaa}
+.list-remove{color:#ccc;background:none;border:none;cursor:pointer;font-size:16px;padding:0;line-height:1;flex-shrink:0}
+.list-remove:hover{color:#dc2626}
+.list-add-row{display:flex;gap:8px;margin-top:8px}
+.list-add-input{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px;border:1px solid #e8e5df;border-radius:7px;background:#fff;color:#1a1a18;outline:none}
+.list-add-input:focus{border-color:#0ea5e9}
+.list-add-btn{padding:7px 14px;border-radius:7px;border:none;background:#1a1a18;color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
+.list-add-btn:hover{background:#333}
+.list-progress{height:4px;background:#e8e5df;border-radius:2px;margin-bottom:8px;overflow:hidden}
+.list-progress-bar{height:100%;background:#16a34a;border-radius:2px;transition:width .3s ease}
+.list-stats-row{display:flex;justify-content:space-between;font-size:11px;color:#999;margin-bottom:8px}
+.list-section-header{font-size:10px;font-weight:500;color:#bbb;text-transform:uppercase;letter-spacing:.06em;margin:10px 0 6px;padding-top:6px;border-top:0.5px solid #e8e5df}
+.list-badge-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:10px;background:#f0fdf4;color:#15803d;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+.list-badge-btn:hover{background:#dcfce7}
+
+/* ── DINING & TRAVEL MODAL ── */
+.dt-modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
+.dt-step{display:none}
+.dt-step.active{display:block}
+.dt-occasion-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500;margin-bottom:1rem}
+.dt-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.dt-choice-card{border:1.5px solid #e8e5df;border-radius:12px;padding:14px 12px;cursor:pointer;background:#fff;text-align:center;transition:all .15s}
+.dt-choice-card:hover{border-color:#1a1a18;background:#f9f8f5;transform:translateY(-1px)}
+.dt-choice-card.active-choice{border-color:#0ea5e9;background:#f0f9ff}
+.dt-choice-icon{font-size:26px;margin-bottom:6px}
+.dt-choice-title{font-size:13px;font-weight:500;color:#1a1a18}
+.dt-choice-sub{font-size:11px;color:#888;margin-top:2px}
+.dt-section-label{font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.dt-site-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.dt-site-card{border:1.5px solid #e8e5df;border-radius:10px;padding:11px 10px;cursor:pointer;text-align:center;background:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s}
+.dt-site-card:hover{border-color:#1a1a18;background:#f9f8f5;transform:translateY(-1px)}
+.dt-site-card.featured{border-color:#f97316;background:#fff7ed}
+.dt-site-icon{font-size:20px}
+.dt-site-name{font-size:13px;font-weight:500;color:#1a1a18}
+.dt-site-desc{font-size:11px;color:#888}
+.dt-or-divider{text-align:center;font-size:12px;color:#bbb;margin:10px 0;position:relative}
+.dt-or-divider::before,.dt-or-divider::after{content:'';position:absolute;top:50%;width:42%;height:0.5px;background:#e8e5df}
+.dt-or-divider::before{left:0}
+.dt-or-divider::after{right:0}
+.dt-input{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 11px;border:1px solid #e8e5df;border-radius:8px;background:#f9f8f5;color:#1a1a18;outline:none;margin-bottom:1rem;display:block}
+.dt-input:focus{border-color:#f97316}
+.dt-note-saved{background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 12px;font-size:13px;color:#c2410c;margin-bottom:1rem;display:none;align-items:center;gap:8px}
+.dt-note-saved.show{display:flex}
+.dt-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+.dt-badge-dining{background:#fff7ed;color:#c2410c}
+.dt-badge-dining:hover{background:#ffedd5}
+.dt-badge-travel{background:#f0f9ff;color:#0369a1}
+.dt-badge-travel:hover{background:#e0f2fe}
+.dt-tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.dt-tab{padding:6px 14px;border-radius:20px;border:1px solid #e8e5df;background:transparent;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:#666;transition:all .15s}
+.dt-tab.active{border-color:#f97316;background:#f97316;color:#fff}
+
+/* ── WORK EVENT MODAL ── */
+.wk-modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
+.wk-step{display:none}
+.wk-step.active{display:block}
+.wk-badge{display:inline-flex;align-items:center;gap:6px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500;color:#0369a1;margin-bottom:1rem}
+.wk-checklist{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem}
+.wk-check-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1.5px solid #e8e5df;border-radius:10px;cursor:pointer;transition:all .15s;background:#fff}
+.wk-check-row:hover{border-color:#374151;background:#f9fafb}
+.wk-check-row.selected{border-color:#374151;background:#f9fafb}
+.wk-check-box{width:18px;height:18px;border-radius:5px;border:1.5px solid #ccc;flex-shrink:0;position:relative;transition:all .12s}
+.wk-check-row.selected .wk-check-box{background:#374151;border-color:#374151}
+.wk-check-row.selected .wk-check-box::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:9px;border:1.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+.wk-check-label{flex:1}
+.wk-check-title{font-size:13px;font-weight:500;color:#1a1a18}
+.wk-check-sub{font-size:11px;color:#888;margin-top:1px}
+.wk-tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.wk-tab{padding:6px 14px;border-radius:20px;border:1px solid #e8e5df;background:transparent;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:#666;transition:all .15s}
+.wk-tab.active{border-color:#374151;background:#374151;color:#fff}
+.wk-site-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.wk-site-card{border:1.5px solid #e8e5df;border-radius:10px;padding:11px 10px;cursor:pointer;text-align:center;background:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s}
+.wk-site-card:hover{border-color:#374151;background:#f9fafb;transform:translateY(-1px)}
+.wk-site-card.featured{border-color:#6366f1;background:#eef2ff}
+.wk-site-icon{font-size:20px}
+.wk-site-name{font-size:13px;font-weight:500;color:#1a1a18}
+.wk-site-desc{font-size:11px;color:#888}
+.wk-input{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 11px;border:1px solid #e8e5df;border-radius:8px;background:#f9f8f5;color:#1a1a18;outline:none;margin-bottom:.75rem;display:block}
+.wk-input:focus{border-color:#374151}
+.wk-note-saved{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:9px 12px;font-size:13px;color:#15803d;margin-bottom:.75rem;display:none;align-items:center;gap:8px}
+.wk-note-saved.show{display:flex}
+.wk-queue-nav{text-align:center;margin-top:10px;font-size:13px;color:#888}
+.wk-badge-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:10px;background:#f0f9ff;color:#0369a1;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+.wk-badge-btn:hover{background:#e0f2fe}
+
+/* ── SETTINGS PANEL ── */
+.settings-overlay{position:fixed;inset:0;background:#f7f6f3;z-index:200;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.settings-overlay.open{transform:translateX(0)}
+.settings-inner{max-width:640px;margin:0 auto;padding:1.5rem 1.25rem 5rem}
+.settings-topbar{display:flex;align-items:center;gap:12px;margin-bottom:1.75rem}
+.settings-back{width:36px;height:36px;border-radius:50%;border:1px solid #e8e5df;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.settings-back:active{background:#f0ede8}
+.settings-h1{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400}
+.settings-section{background:#fff;border:1px solid #e8e5df;border-radius:12px;margin-bottom:1.25rem;overflow:hidden}
+.settings-section-title{font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;padding:14px 16px 0}
+.settings-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:0.5px solid #f0ede8}
+.settings-row:last-child{border-bottom:none}
+.settings-row-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.settings-row-body{flex:1;min-width:0}
+.settings-row-title{font-size:14px;font-weight:500;color:#1a1a18}
+.settings-row-sub{font-size:12px;color:#888;margin-top:1px}
+.settings-row-action{flex-shrink:0}
+.settings-input{font-family:'DM Sans',sans-serif;font-size:14px;padding:7px 10px;border:1px solid #e8e5df;border-radius:8px;background:#f9f8f5;color:#1a1a18;outline:none;width:160px;-webkit-appearance:none;touch-action:manipulation}
+.settings-input:focus{border-color:#1a1a18}
+.settings-select{font-family:'DM Sans',sans-serif;font-size:14px;padding:7px 10px;border:1px solid #e8e5df;border-radius:8px;background:#f9f8f5;color:#1a1a18;outline:none;-webkit-appearance:none;cursor:pointer;touch-action:manipulation;min-width:140px}
+.settings-save-btn{padding:7px 16px;border-radius:8px;border:none;background:#1a1a18;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.settings-save-btn:active{background:#333}
+.cal-card{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:0.5px solid #f0ede8}
+.cal-card:last-child{border-bottom:none}
+.cal-card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.cal-card-body{flex:1;min-width:0}
+.cal-card-name{font-size:13px;font-weight:500;color:#1a1a18}
+.cal-card-status{font-size:11px;margin-top:1px}
+.cal-connect-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:8px;border:1px solid #e8e5df;background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent;touch-action:manipulation;white-space:nowrap}
+.cal-connect-btn.connected{background:#f0fdf4;border-color:#bbf7d0;color:#15803d}
+.cal-connect-btn.disconnect{background:#fef2f2;border-color:#fecaca;color:#dc2626}
+.cal-url-row{padding:10px 16px;border-bottom:0.5px solid #f0ede8;display:none}
+.cal-url-row.open{display:flex;gap:8px;align-items:center}
+.cal-url-input{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px;border:1px solid #e8e5df;border-radius:7px;background:#f9f8f5;color:#1a1a18;outline:none;-webkit-appearance:none}
+.cal-url-input:focus{border-color:#0ea5e9}
+.settings-danger-btn{padding:7px 16px;border-radius:8px;border:1px solid #fecaca;background:#fff;color:#dc2626;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.settings-danger-btn:active{background:#fef2f2}
+.lang-option{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:0.5px solid #f0ede8;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.lang-option:last-child{border-bottom:none}
+.lang-option:active{background:#f9f8f5}
+.lang-flag{font-size:20px;flex-shrink:0}
+.lang-name{font-size:14px;color:#1a1a18;flex:1}
+.lang-native{font-size:12px;color:#888}
+.lang-check{width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;flex-shrink:0;position:relative}
+.lang-check.selected{background:#1a1a18;border-color:#1a1a18}
+.lang-check.selected::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:9px;border:1.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+
+/* ── WEEKLY WRAP MODAL (Pillar 3) ── */
+.wrap-modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:380px}
+.wrap-stat{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid #f0ede8}
+.wrap-stat:last-child{border-bottom:none}
+.wrap-stat-label{font-size:13px;color:#555}
+.wrap-stat-val{font-size:14px;font-weight:500;color:#1a1a18}
+
+/* ── REVIEW NUDGE (Pillar 5) ── */
+.review-nudge{background:#fff;border:1px solid #e8e5df;border-radius:12px;padding:14px 16px;margin-bottom:1.25rem;text-align:center;display:none}
+.review-nudge.visible{display:block}
+.review-stars{font-size:22px;margin-bottom:8px;cursor:pointer;letter-spacing:3px}
+.review-title{font-size:14px;font-weight:500;margin-bottom:4px}
+.review-sub{font-size:12px;color:#888;margin-bottom:12px}
+.review-actions{display:flex;gap:8px;justify-content:center}
+.btn-sm{padding:6px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer}
+
+@media(max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}.header{flex-direction:column}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+.pop{animation:pop .25s ease}
+/* ── GLOBAL MOBILE TOUCH FIX ── */
+button,a,[onclick]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button{cursor:pointer;-webkit-appearance:none}
+input,select,textarea{-webkit-appearance:none;border-radius:0}
+.modal-backdrop{-webkit-overflow-scrolling:touch}
+.ob-card{padding-bottom:env(safe-area-inset-bottom,0px)}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     PILLAR 1 — FAST ONBOARDING (3 slides, ~30s)
+════════════════════════════════════════════ -->
+<div id="onboarding">
+  <div class="ob-card">
+    <div class="ob-logo">Obliga</div>
+    <div class="ob-tag">Life's plans, made easy</div>
+    <div class="ob-steps">
+      <div class="ob-step-dot active" id="dot0"></div>
+      <div class="ob-step-dot" id="dot1"></div>
+      <div class="ob-step-dot" id="dot2"></div>
+    </div>
+
+    <div class="ob-slide active" id="slide0">
+      <div class="ob-icon">📋</div>
+      <div class="ob-title">Your inbox for life's obligations</div>
+      <div class="ob-desc">Bills, health, family, work — everything in one place with smart due dates and priorities.</div>
+      <button class="ob-btn" id="ob-btn-0">Get started →</button>
+      <button class="ob-skip" id="ob-skip-0">Skip intro</button>
+    </div>
+
+    <div class="ob-slide" id="slide1">
+      <div class="ob-icon">☂️</div>
+      <div class="ob-title">Rain check plans instantly</div>
+      <div class="ob-highlight">New: when you rain check someone, Obliga compares both your calendars and suggests times that work for both of you — automatically.</div>
+      <div class="ob-desc">No more back-and-forth texts. Just pick a slot and it's done.</div>
+      <button class="ob-btn" id="ob-btn-1">That's clever →</button>
+    </div>
+
+    <div class="ob-slide" id="slide2">
+      <div class="ob-icon">👋</div>
+      <div class="ob-title">What should we call you?</div>
+      <input class="ob-name-input" id="ob-name" type="text" placeholder="Your first name" maxlength="30" />
+      <div class="ob-desc" style="margin-bottom:1rem">We'll personalize your daily digest and streak.</div>
+      <button class="ob-btn" id="ob-btn-2">Start with Obliga →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     RAIN CHECK MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="rc-backdrop" onclick="closeRCOutside(event)">
+  <div class="modal">
+    <div class="modal-hdr"><span style="font-size:22px">☂️</span><div class="modal-title">Rain check</div></div>
+    <div class="modal-sub" id="rc-sub"></div>
+    <div id="rc-step-form">
+      <label>Their email <span style="text-transform:none;letter-spacing:0;font-weight:400;color:#bbb">(if they have Obliga)</span></label>
+      <input type="email" id="rc-email" placeholder="friend@email.com">
+      <label>Note <span style="text-transform:none;letter-spacing:0;font-weight:400;color:#bbb">(optional)</span></label>
+      <textarea id="rc-note" placeholder="e.g. Something came up — let's find a better time"></textarea>
+      <label class="remind-row" for="rc-remind">
+        <input type="checkbox" id="rc-remind" checked>
+        <span>Remind me to follow up in 3 days</span>
+      </label>
+      <div id="rc-err" style="color:#dc2626;font-size:13px;margin-bottom:12px;display:none"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeRC()">Cancel</button>
+        <button class="btn-confirm" onclick="rcFindSlots()">Find mutual times →</button>
+      </div>
+      <div style="text-align:center;margin-top:10px">
+        <button class="ob-skip" onclick="rcShowManual()">Skip — pick date manually</button>
+      </div>
+    </div>
+    <div id="rc-step-finding" style="display:none;text-align:center;padding:2rem 0">
+      <div style="width:32px;height:32px;border:2px solid #e8e5df;border-top-color:#0ea5e9;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px"></div>
+      <p style="font-size:14px;color:#888">Checking both calendars…</p>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    </div>
+    <div id="rc-step-slots" style="display:none">
+      <p style="font-size:13px;color:#555;margin-bottom:12px">These times work for <strong>both</strong> your calendars:</p>
+      <div id="rc-slots-list"></div>
+      <button class="btn-cancel" style="width:100%;margin-top:4px;text-align:center" onclick="rcShowManual()">None work — pick manually</button>
+    </div>
+    <div id="rc-step-manual" style="display:none">
+      <label>Pick a new date</label>
+      <input type="date" id="rc-manual-date">
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeRC()">Cancel</button>
+        <button class="btn-confirm" onclick="rcConfirmManual()">Rain check</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PILLAR 4 — INVITE MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="invite-backdrop" onclick="if(event.target===this)closeInvite()">
+  <div class="invite-modal">
+    <div style="font-size:22px;margin-bottom:4px">🔗</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:4px">Invite to Obliga</div>
+    <p style="font-size:13px;color:#888;margin-bottom:4px">Share with someone so you can rain check each other's plans with mutual calendar scheduling.</p>
+    <div class="invite-link">
+      <span id="invite-url">obliga.app/join?ref=you</span>
+      <button class="copy-btn" onclick="copyInvite()">Copy</button>
+    </div>
+    <p style="font-size:12px;color:#aaa;margin-bottom:1rem">They get a free month of Obliga Pro when they join.</p>
+    <div style="display:flex;gap:8px">
+      <button class="btn-confirm" style="flex:1" onclick="shareInvite()">Share link</button>
+      <button class="btn-cancel" onclick="closeInvite()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     GIFT / REGISTRY MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="gift-backdrop" onclick="if(event.target===this)closeGift()">
+  <div class="gift-modal">
+    <div class="modal-hdr"><span style="font-size:22px" id="gift-icon">🎁</span><div class="modal-title" id="gift-title">Gift needed?</div></div>
+    <div class="gift-event-badge" id="gift-badge"></div>
+
+    <!-- STEP 1: Registry yes/no -->
+    <div class="gift-section active" id="gift-s1">
+      <div class="gift-q">Do they have a registry?</div>
+      <div class="gift-sub" id="gift-s1-sub">Let us help you find it or pick the perfect gift.</div>
+      <div class="gift-choice-row">
+        <button class="gift-choice yes" onclick="giftStep('registry')">✓ Yes, they have one</button>
+        <button class="gift-choice no" onclick="giftStep('shop')">✗ No registry</button>
+      </div>
+      <div style="text-align:center"><button class="ob-skip" onclick="giftStep('skip')">Skip — no gift needed</button></div>
+    </div>
+
+    <!-- STEP 2A: They have a registry -->
+    <div class="gift-section" id="gift-s-registry">
+      <div class="gift-q">Add their registry link</div>
+      <div class="gift-sub">Paste the URL here and we'll save it with the obligation — one tap to open when you're ready to shop.</div>
+      <input class="registry-input" type="url" id="registry-url-input" placeholder="https://www.amazon.com/wedding/registry/...">
+      <div style="font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Or jump straight to a popular registry site</div>
+      <div class="registry-presets" id="registry-presets"></div>
+      <div class="registry-saved" id="registry-saved">✓ Registry link saved! Tap the 🎁 badge on the item to open it.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="giftStep('s1')">← Back</button>
+        <button class="btn-confirm" onclick="saveRegistry()">Save registry link</button>
+      </div>
+    </div>
+
+    <!-- STEP 2B: No registry — shop suggestions -->
+    <div class="gift-section" id="gift-s-shop">
+      <div class="gift-q">Where would you like to shop?</div>
+      <div class="gift-sub">Pick a store and we'll open it in a new tab so you can find the perfect gift.</div>
+      <div class="shop-grid" id="shop-grid"></div>
+      <div style="text-align:center"><button class="ob-skip" onclick="closeGift()">Done shopping</button></div>
+    </div>
+
+    <!-- STEP skip -->
+    <div class="gift-section" id="gift-s-skip" style="text-align:center;padding:1rem 0">
+      <div style="font-size:32px;margin-bottom:8px">✓</div>
+      <div style="font-size:15px;font-weight:500">No problem!</div>
+      <div style="font-size:13px;color:#888;margin-top:4px">Obligation saved without a gift reminder.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SHOPPING MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="shop-backdrop" onclick="if(event.target===this)closeShopModal()">
+  <div class="shop-modal">
+    <div class="modal-hdr">
+      <span style="font-size:22px" id="shop-modal-icon">🛒</span>
+      <div class="modal-title" id="shop-modal-title">Shop online</div>
+    </div>
+    <p style="font-size:13px;color:#888;margin-bottom:1rem" id="shop-modal-sub">Pick a store and we'll open it in a new tab.</p>
+    <div class="shop-tab-row" id="shop-tab-row"></div>
+    <div id="shop-panels"></div>
+    <!-- List prompt at bottom of shopping modal -->
+    <div style="border-top:0.5px solid #e8e5df;margin-top:1rem;padding-top:1rem;text-align:center">
+      <p style="font-size:13px;color:#888;margin-bottom:8px">Prefer to shop in-store? Build a list instead.</p>
+      <button style="padding:8px 18px;border-radius:8px;border:1px solid #e8e5df;background:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;color:#1a1a18" id="shop-to-list-btn" onclick="shopToList()">📋 Create a shopping list</button>
+    </div>
+    <div style="text-align:center;margin-top:10px">
+      <button class="ob-skip" onclick="closeShopModal()">Done — back to my list</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     DINING & TRAVEL MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="dt-backdrop" onclick="if(event.target===this)closeDTModal()">
+  <div class="dt-modal">
+    <div class="modal-hdr">
+      <span style="font-size:22px" id="dt-icon">🍽️</span>
+      <div class="modal-title" id="dt-title">Plan your outing</div>
+    </div>
+    <div class="dt-occasion-badge" id="dt-badge"></div>
+
+    <!-- Step 1: What do you need? -->
+    <div class="dt-step active" id="dt-s1">
+      <div style="font-size:14px;font-weight:500;color:#1a1a18;margin-bottom:6px">What would you like help with?</div>
+      <div style="font-size:13px;color:#888;margin-bottom:1.25rem">Select one or both — we'll help you plan everything.</div>
+      <div class="dt-choice-grid">
+        <div class="dt-choice-card" id="dtc-restaurant" onclick="dtToggleChoice('restaurant')">
+          <div class="dt-choice-icon">🍽️</div>
+          <div class="dt-choice-title">Restaurant</div>
+          <div class="dt-choice-sub">Find a great spot</div>
+        </div>
+        <div class="dt-choice-card" id="dtc-travel" onclick="dtToggleChoice('travel')">
+          <div class="dt-choice-icon">✈️</div>
+          <div class="dt-choice-title">Travel & stays</div>
+          <div class="dt-choice-sub">Flights, hotels & more</div>
+        </div>
+      </div>
+      <div id="dt-s1-err" style="font-size:13px;color:#dc2626;margin-bottom:10px;display:none">Please select at least one option.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeDTModal()">Skip for now</button>
+        <button class="btn-confirm" onclick="dtProceed()">Let's plan →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Restaurant recommendations -->
+    <div class="dt-step" id="dt-s-restaurant">
+      <div class="dt-tabs" id="dt-rest-tabs"></div>
+      <div id="dt-rest-panels"></div>
+      <div class="dt-or-divider">or search by vibe</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem" id="dt-vibe-tags"></div>
+      <div class="dt-section-label" style="margin-bottom:6px">Save a restaurant idea</div>
+      <input class="dt-input" type="text" id="dt-rest-note" placeholder="e.g. The Italian place on Main St, 7pm reservation">
+      <div class="dt-note-saved" id="dt-rest-saved">✓ Restaurant note saved to this obligation.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="dtShowStep('s1')">← Back</button>
+        <button class="btn-confirm" onclick="dtSaveRestNote()">Save note</button>
+      </div>
+      <div style="text-align:center;margin-top:8px" id="dt-rest-also-travel"></div>
+    </div>
+
+    <!-- Step 3: Travel & stays -->
+    <div class="dt-step" id="dt-s-travel">
+      <div class="dt-tabs" id="dt-travel-tabs"></div>
+      <div id="dt-travel-panels"></div>
+      <div class="dt-section-label" style="margin-top:4px;margin-bottom:6px">Save a travel note</div>
+      <input class="dt-input" type="text" id="dt-travel-note" placeholder="e.g. Flight AA 412 to NYC, Hotel Le Méridien">
+      <div class="dt-note-saved" id="dt-travel-saved">✓ Travel note saved to this obligation.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="dtShowStep('s1')">← Back</button>
+        <button class="btn-confirm" onclick="dtSaveTravelNote()">Save note</button>
+      </div>
+    </div>
+
+    <!-- Done state -->
+    <div class="dt-step" id="dt-s-done" style="text-align:center;padding:1.5rem 0">
+      <div style="font-size:36px;margin-bottom:10px">🎉</div>
+      <div style="font-size:15px;font-weight:500;margin-bottom:4px">All set!</div>
+      <div style="font-size:13px;color:#888">Your notes are saved on the obligation.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     WORK EVENT MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="wk-backdrop" onclick="if(event.target===this)closeWKModal()">
+  <div class="wk-modal">
+    <div class="modal-hdr">
+      <span style="font-size:22px" id="wk-icon">💼</span>
+      <div class="modal-title" id="wk-title">Plan your work event</div>
+    </div>
+    <div class="wk-badge" id="wk-badge"></div>
+
+    <!-- Step 1: What do you need? -->
+    <div class="wk-step active" id="wk-s1">
+      <div style="font-size:14px;font-weight:500;color:#1a1a18;margin-bottom:4px">What do you need to arrange?</div>
+      <div style="font-size:13px;color:#888;margin-bottom:1rem">Select everything that applies — we'll help you book it all.</div>
+      <div class="wk-checklist" id="wk-checklist">
+        <div class="wk-check-row" id="wkc-flight" onclick="wkToggle('flight')">
+          <div class="wk-check-box"></div>
+          <div class="wk-check-label">
+            <div class="wk-check-title">✈️ Flight</div>
+            <div class="wk-check-sub">Book flights & compare fares</div>
+          </div>
+        </div>
+        <div class="wk-check-row" id="wkc-hotel" onclick="wkToggle('hotel')">
+          <div class="wk-check-box"></div>
+          <div class="wk-check-label">
+            <div class="wk-check-title">🏨 Hotel</div>
+            <div class="wk-check-sub">Find hotels near the venue</div>
+          </div>
+        </div>
+        <div class="wk-check-row" id="wkc-car" onclick="wkToggle('car')">
+          <div class="wk-check-box"></div>
+          <div class="wk-check-label">
+            <div class="wk-check-title">🚗 Rental car</div>
+            <div class="wk-check-sub">Compare rental rates & pickup</div>
+          </div>
+        </div>
+        <div class="wk-check-row" id="wkc-dinner" onclick="wkToggle('dinner')">
+          <div class="wk-check-box"></div>
+          <div class="wk-check-label">
+            <div class="wk-check-title">🍽️ Dinner reservation</div>
+            <div class="wk-check-sub">Team dinner, client meal or solo dining</div>
+          </div>
+        </div>
+        <div class="wk-check-row" id="wkc-transport" onclick="wkToggle('transport')">
+          <div class="wk-check-box"></div>
+          <div class="wk-check-label">
+            <div class="wk-check-title">🚕 Ground transport</div>
+            <div class="wk-check-sub">Rideshare, shuttle or taxi</div>
+          </div>
+        </div>
+        <div class="wk-check-row" id="wkc-expense" onclick="wkToggle('expense')">
+          <div class="wk-check-box"></div>
+          <div class="wk-check-label">
+            <div class="wk-check-title">🧾 Expense tracking</div>
+            <div class="wk-check-sub">Log receipts & reimbursements</div>
+          </div>
+        </div>
+      </div>
+      <div id="wk-s1-err" style="font-size:13px;color:#dc2626;margin-bottom:10px;display:none">Select at least one option to continue.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeWKModal()">Skip for now</button>
+        <button class="btn-confirm" onclick="wkProceed()">Let's book →</button>
+      </div>
+    </div>
+
+    <!-- Step: Flight booking -->
+    <div class="wk-step" id="wk-s-flight">
+      <div style="font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:3px">✈️ Book your flight</div>
+      <div style="font-size:12px;color:#888;margin-bottom:1rem">Compare prices across all major airlines.</div>
+      <div class="wk-tabs" id="wk-flight-tabs"></div>
+      <div id="wk-flight-panels"></div>
+      <div style="font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Flight note</div>
+      <input class="wk-input" type="text" id="wk-flight-note" placeholder="e.g. Delta DL402, depart Mon 7am">
+      <div class="wk-note-saved" id="wk-flight-saved">✓ Flight note saved.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="wkBack()">← Back</button>
+        <button class="btn-confirm" onclick="wkSaveNote('flight')">Save & continue →</button>
+      </div>
+    </div>
+
+    <!-- Step: Hotel booking -->
+    <div class="wk-step" id="wk-s-hotel">
+      <div style="font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:3px">🏨 Book your hotel</div>
+      <div style="font-size:12px;color:#888;margin-bottom:1rem">Search near the venue for the best rates.</div>
+      <div class="wk-tabs" id="wk-hotel-tabs"></div>
+      <div id="wk-hotel-panels"></div>
+      <div style="font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Hotel note</div>
+      <input class="wk-input" type="text" id="wk-hotel-note" placeholder="e.g. Marriott downtown, check-in Sun night">
+      <div class="wk-note-saved" id="wk-hotel-saved">✓ Hotel note saved.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="wkBack()">← Back</button>
+        <button class="btn-confirm" onclick="wkSaveNote('hotel')">Save & continue →</button>
+      </div>
+    </div>
+
+    <!-- Step: Car rental -->
+    <div class="wk-step" id="wk-s-car">
+      <div style="font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:3px">🚗 Rental car</div>
+      <div style="font-size:12px;color:#888;margin-bottom:1rem">Find the best rate for your trip dates.</div>
+      <div class="wk-site-grid" id="wk-car-grid"></div>
+      <div style="font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Car note</div>
+      <input class="wk-input" type="text" id="wk-car-note" placeholder="e.g. Economy at Enterprise, pickup Mon 9am">
+      <div class="wk-note-saved" id="wk-car-saved">✓ Car note saved.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="wkBack()">← Back</button>
+        <button class="btn-confirm" onclick="wkSaveNote('car')">Save & continue →</button>
+      </div>
+    </div>
+
+    <!-- Step: Dinner reservation -->
+    <div class="wk-step" id="wk-s-dinner">
+      <div style="font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:3px">🍽️ Dinner reservation</div>
+      <div style="font-size:12px;color:#888;margin-bottom:1rem">Find a great spot for your team, client or solo meal.</div>
+      <div class="wk-tabs" id="wk-dinner-tabs"></div>
+      <div id="wk-dinner-panels"></div>
+      <div style="font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Dinner note</div>
+      <input class="wk-input" type="text" id="wk-dinner-note" placeholder="e.g. Mastro's Steakhouse, Tue 7pm, party of 6">
+      <div class="wk-note-saved" id="wk-dinner-saved">✓ Dinner note saved.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="wkBack()">← Back</button>
+        <button class="btn-confirm" onclick="wkSaveNote('dinner')">Save & continue →</button>
+      </div>
+    </div>
+
+    <!-- Step: Ground transport -->
+    <div class="wk-step" id="wk-s-transport">
+      <div style="font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:3px">🚕 Ground transport</div>
+      <div style="font-size:12px;color:#888;margin-bottom:1rem">Arrange your ride to and from the event.</div>
+      <div class="wk-site-grid" id="wk-transport-grid"></div>
+      <div style="font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Transport note</div>
+      <input class="wk-input" type="text" id="wk-transport-note" placeholder="e.g. Uber to airport 5am, shuttle from hotel">
+      <div class="wk-note-saved" id="wk-transport-saved">✓ Transport note saved.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="wkBack()">← Back</button>
+        <button class="btn-confirm" onclick="wkSaveNote('transport')">Save & continue →</button>
+      </div>
+    </div>
+
+    <!-- Step: Expense tracking -->
+    <div class="wk-step" id="wk-s-expense">
+      <div style="font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:3px">🧾 Expense tracking</div>
+      <div style="font-size:12px;color:#888;margin-bottom:1rem">Log your trip costs for easy reimbursement.</div>
+      <div class="wk-site-grid" id="wk-expense-grid"></div>
+      <div style="font-size:11px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Expense note</div>
+      <input class="wk-input" type="text" id="wk-expense-note" placeholder="e.g. Budget $800 — flight, hotel, meals">
+      <div class="wk-note-saved" id="wk-expense-saved">✓ Expense note saved.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="wkBack()">← Back</button>
+        <button class="btn-confirm" onclick="wkSaveNote('expense')">Save & done ✓</button>
+      </div>
+    </div>
+
+    <!-- Done -->
+    <div class="wk-step" id="wk-s-done" style="text-align:center;padding:1.5rem 0">
+      <div style="font-size:36px;margin-bottom:10px">✅</div>
+      <div style="font-size:15px;font-weight:500;margin-bottom:4px">All booked!</div>
+      <div style="font-size:13px;color:#888" id="wk-done-summary">Your work trip is all planned.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     LIST BUILDER MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="list-backdrop" onclick="if(event.target===this)closeListModal()">
+  <div class="list-modal">
+    <!-- Step 1: Choose a template -->
+    <div id="list-step-template">
+      <div class="modal-hdr"><span style="font-size:22px">📋</span><div class="modal-title">Build your list</div></div>
+      <p style="font-size:13px;color:#888;margin-bottom:1rem">Start from a template or build from scratch.</p>
+      <div class="list-template-grid" id="list-template-grid"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn-cancel" onclick="closeListModal()">Cancel</button>
+        <button class="btn-confirm" id="list-use-template-btn" onclick="useTemplate()">Use template →</button>
+      </div>
+    </div>
+    <!-- Step 2: The actual list -->
+    <div id="list-step-builder" style="display:none">
+      <div class="modal-hdr" style="margin-bottom:0.5rem">
+        <span style="font-size:22px" id="list-builder-icon">📋</span>
+        <div class="modal-title" id="list-builder-title">My list</div>
+      </div>
+      <p style="font-size:12px;color:#888;margin-bottom:1rem" id="list-builder-sub"></p>
+      <div class="list-progress"><div class="list-progress-bar" id="list-progress-bar" style="width:0%"></div></div>
+      <div class="list-stats-row">
+        <span id="list-checked-count">0 of 0 items</span>
+        <span id="list-pct">0%</span>
+      </div>
+      <div class="list-builder-area">
+        <div id="list-items-container"></div>
+        <div class="list-add-row">
+          <input class="list-add-input" type="text" id="list-new-item" placeholder="Add an item…">
+          <button class="list-add-btn" onclick="addListItem()">+ Add</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:space-between;align-items:center">
+        <button class="btn-cancel" onclick="listStepBack()">← Templates</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn-cancel" onclick="clearChecked()" id="clear-checked-btn" style="display:none">Clear checked</button>
+          <button class="btn-confirm" onclick="saveListToItem()">Save list ✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SETTINGS PANEL
+════════════════════════════════════════════ -->
+<div class="settings-overlay" id="settings-overlay">
+  <div class="settings-inner">
+
+    <div class="settings-topbar">
+      <button class="settings-back" onclick="closeSettings()" aria-label="Back">←</button>
+      <h1 class="settings-h1">Settings</h1>
+    </div>
+
+    <!-- ── PROFILE ── -->
+    <div class="settings-section-title">Profile</div>
+    <div class="settings-section">
+      <div class="settings-row">
+        <div class="settings-row-icon" style="background:#f5f3ff">👤</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">Your name</div>
+          <div class="settings-row-sub">Used in greetings and invites</div>
+        </div>
+        <div class="settings-row-action" style="display:flex;gap:8px;align-items:center">
+          <input class="settings-input" type="text" id="settings-name" placeholder="First name" maxlength="30">
+          <button class="settings-save-btn" onclick="saveName()">Save</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-icon" style="background:#fff7ed">🔔</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">Push notifications</div>
+          <div class="settings-row-sub" id="push-status-text">Get reminders for due obligations</div>
+        </div>
+        <div class="settings-row-action">
+          <button id="push-btn" class="cal-connect-btn" onclick="togglePush()">Enable</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CALENDARS ── -->
+    <div class="settings-section-title" style="margin-top:1rem">Calendars</div>
+    <div class="settings-section" id="calendar-section">
+
+      <!-- Google Calendar -->
+      <div class="cal-card" id="cal-google">
+        <div class="cal-card-icon" style="background:#eff6ff">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        </div>
+        <div class="cal-card-body">
+          <div class="cal-card-name">Google Calendar</div>
+          <div class="cal-card-status" id="gcal-status" style="color:#888">Not connected</div>
+        </div>
+        <button class="cal-connect-btn" id="gcal-btn" onclick="toggleCal('google')">Connect</button>
+      </div>
+
+      <!-- Outlook -->
+      <div class="cal-card" id="cal-outlook">
+        <div class="cal-card-icon" style="background:#eff6ff">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#0078d4"><path d="M24 7.387v10.478L19.2 21V15.36l-7.2 4.44V7.2L19.2 3l4.8 4.387zM10.8 16.8 0 14.4V9.6L10.8 7.2v9.6z"/></svg>
+        </div>
+        <div class="cal-card-body">
+          <div class="cal-card-name">Microsoft Outlook</div>
+          <div class="cal-card-status" id="outlook-status" style="color:#888">Not connected</div>
+        </div>
+        <button class="cal-connect-btn" id="outlook-btn" onclick="toggleCal('outlook')">Connect</button>
+      </div>
+
+      <!-- Apple Calendar -->
+      <div class="cal-card" id="cal-apple">
+        <div class="cal-card-icon" style="background:#fff0f0">🍎</div>
+        <div class="cal-card-body">
+          <div class="cal-card-name">Apple Calendar</div>
+          <div class="cal-card-status" id="apple-status" style="color:#888">Not connected</div>
+        </div>
+        <button class="cal-connect-btn" id="apple-btn" onclick="toggleCal('apple')">Connect</button>
+      </div>
+
+      <!-- Yahoo Calendar -->
+      <div class="cal-card" id="cal-yahoo">
+        <div class="cal-card-icon" style="background:#f5f0ff">💜</div>
+        <div class="cal-card-body">
+          <div class="cal-card-name">Yahoo Calendar</div>
+          <div class="cal-card-status" id="yahoo-status" style="color:#888">Not connected</div>
+        </div>
+        <button class="cal-connect-btn" id="yahoo-btn" onclick="toggleCal('yahoo')">Connect</button>
+      </div>
+
+      <!-- Custom iCal URL -->
+      <div class="cal-card">
+        <div class="cal-card-icon" style="background:#f0fdf4">📅</div>
+        <div class="cal-card-body">
+          <div class="cal-card-name">Custom calendar (iCal)</div>
+          <div class="cal-card-status" id="ical-status" style="color:#888">Add any .ics calendar URL</div>
+        </div>
+        <button class="cal-connect-btn" id="ical-btn" onclick="toggleICalInput()">Add URL</button>
+      </div>
+      <div class="cal-url-row" id="ical-url-row">
+        <input class="cal-url-input" type="url" id="ical-url-input" placeholder="https://calendar.example.com/feed.ics">
+        <button class="settings-save-btn" onclick="saveICalUrl()">Save</button>
+      </div>
+
+    </div>
+
+    <!-- ── LANGUAGE ── -->
+    <div class="settings-section-title" style="margin-top:1rem">Language</div>
+    <div class="settings-section" id="lang-section"></div>
+
+    <!-- ── DATA & PRIVACY ── -->
+    <div class="settings-section-title" style="margin-top:1rem">Data & privacy</div>
+    <div class="settings-section">
+      <div class="settings-row">
+        <div class="settings-row-icon" style="background:#f0fdf4">☁️</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">Export my data</div>
+          <div class="settings-row-sub">Download all obligations as JSON</div>
+        </div>
+        <div class="settings-row-action">
+          <button class="cal-connect-btn" onclick="exportData()">Export</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-icon" style="background:#fef2f2">🗑️</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">Clear all data</div>
+          <div class="settings-row-sub">Removes all obligations and settings</div>
+        </div>
+        <div class="settings-row-action">
+          <button class="settings-danger-btn" onclick="confirmClearData()">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── APP INFO ── */
+    <div style="text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:0.5px solid #e8e5df">
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;color:#1a1a18;margin-bottom:4px">Obliga</div>
+      <div style="font-size:12px;color:#aaa">Version 1.0 · Life's plans, made easy</div>
+      <div style="font-size:12px;color:#aaa;margin-top:4px">© 2025 Obliga</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-backdrop" id="wrap-backdrop" onclick="if(event.target===this)closeWrap()">
+  <div class="wrap-modal">
+    <div style="font-size:22px;margin-bottom:4px">📊</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:1rem">Your week in review</div>
+    <div id="wrap-stats"></div>
+    <button class="btn-confirm" style="width:100%;margin-top:1rem" onclick="closeWrap()">Keep it up →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TOAST
+════════════════════════════════════════════ -->
+<div class="win-toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════════ -->
+<div class="app">
+
+  <div class="header">
+    <div>
+      <h1 class="logo">Obliga</h1>
+      <p class="tagline">Life's plans, made easy</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span class="streak-badge" id="streak-badge" onclick="openWrap()">🔥 <span id="streak-count">0</span> day streak</span>
+      <button style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid #e0ddd8;background:transparent;color:#666;cursor:pointer;font-family:'DM Sans',sans-serif;touch-action:manipulation;-webkit-tap-highlight-color:transparent" onclick="openInvite()">+ Invite friend</button>
+      <button id="settings-btn" onclick="openSettings()" style="width:34px;height:34px;border-radius:50%;border:1px solid #e0ddd8;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;-webkit-tap-highlight-color:transparent;touch-action:manipulation" title="Settings">⚙️</button>
+    </div>
+  </div>
+
+  <!-- PILLAR 3: Daily digest banner -->
+  <div class="digest" id="digest-banner">
+    <div class="digest-icon">☀️</div>
+    <div class="digest-body">
+      <div class="digest-title" id="digest-title">Good morning!</div>
+      <div class="digest-text" id="digest-text">Loading your day…</div>
+    </div>
+    <button class="digest-close" onclick="dismissDigest()">×</button>
+  </div>
+
+  <!-- PILLAR 5: Review nudge — shown after 5 completions -->
+  <div class="review-nudge" id="review-nudge">
+    <div class="review-stars" id="review-stars" onclick="rateApp(5)">★★★★★</div>
+    <div class="review-title">Enjoying Obliga?</div>
+    <div class="review-sub">Your rating helps others discover the app</div>
+    <div class="review-actions">
+      <button class="btn-sm btn-confirm" onclick="rateApp(5)">Rate 5 stars ⭐</button>
+      <button class="btn-sm btn-cancel" onclick="dismissReview()">Maybe later</button>
+    </div>
+  </div>
+
+  <!-- PILLAR 2: Rain check hero banner -->
+  <div class="rc-hero" id="rc-hero">
+    <div style="font-size:24px">☂️</div>
+    <div class="rc-hero-text">
+      <div class="rc-hero-title">Rain check plans with anyone</div>
+      <div class="rc-hero-sub">Obliga finds times that work for both your calendars</div>
+    </div>
+    <button class="rc-hero-btn" onclick="dismissRCHero()">Got it</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat"><span class="stat-num" id="st-pending">0</span><span class="stat-label">Pending</span></div>
+    <div class="stat"><span class="stat-num danger" id="st-overdue">0</span><span class="stat-label">Overdue</span></div>
+    <div class="stat"><span class="stat-num rain" id="st-rain">0</span><span class="stat-label">Rain checked</span></div>
+    <div class="stat"><span class="stat-num" id="st-done">0</span><span class="stat-label">Done today</span></div>
+  </div>
+
+  <!-- Add form -->
+  <div class="add-form">
+    <input class="add-input" type="text" id="new-title" placeholder="Add an obligation…">
+    <div class="add-row">
+      <input type="date" id="new-date">
+      <select id="new-cat">
+        <option value="bills">Bills & finances</option>
+        <option value="health">Health & appointments</option>
+        <option value="home">Home & chores</option>
+        <option value="family">Family & relationships</option>
+        <option value="work" selected>Work & career</option>
+      </select>
+      <select id="new-pri">
+        <option value="high">High priority</option>
+        <option value="normal" selected>Normal</option>
+        <option value="low">Low priority</option>
+      </select>
+      <button class="add-btn" onclick="addItem()">Add</button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters" id="filters"></div>
+
+  <!-- List -->
+  <div id="list"></div>
+</div>
+
+<script>
+/* ─── CONSTANTS ─── */
+const CATS={bills:{label:'Bills',bg:'#eff6ff',color:'#1d4ed8'},health:{label:'Health',bg:'#f0fdf4',color:'#15803d'},home:{label:'Home',bg:'#f5f5f4',color:'#57534e'},family:{label:'Family',bg:'#fdf2f8',color:'#9d174d'},work:{label:'Work',bg:'#f5f3ff',color:'#6d28d9'}};
+const FILTERS=[{k:'all',label:'All'},{k:'bills',label:'Bills'},{k:'health',label:'Health'},{k:'home',label:'Home'},{k:'family',label:'Family'},{k:'work',label:'Work'},{k:'high',label:'⬆ High priority'},{k:'raincheck',label:'☂️ Rain checked'}];
+let activeFilter='all';
+let pendingRCId=null;
+let obSlide=0;
+
+/* ─── HELPERS ─── */
+function daysOut(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function dueStatus(due){if(!due)return null;const t=new Date();t.setHours(0,0,0,0);const d=Math.round((new Date(due+'T00:00:00')-t)/86400000);return d<0?'overdue':d<=3?'soon':'ok'}
+function formatDue(due){if(!due)return'';const t=new Date();t.setHours(0,0,0,0);const d=Math.round((new Date(due+'T00:00:00')-t)/86400000);if(d===0)return'Today';if(d===1)return'Tomorrow';if(d===-1)return'Yesterday';if(d<0)return Math.abs(d)+'d overdue';if(d<7)return'In '+d+'d';return new Date(due+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+
+/* ─── STATE ─── */
+const SEED=[
+  {id:'s1',title:'Pay electric bill',cat:'bills',due:daysOut(-2),priority:'high',done:false,rainCheck:false,rainNote:null,rainDate:null,hasGift:false,registryUrl:null,giftEvent:null,hasShopping:false,shopProfile:null,hasList:false,savedList:null,listTemplateId:null,hasDining:false,hasTravel:false,restaurantNote:null,travelNote:null,diningOccasion:null},
+  {id:'s2',title:'Annual physical checkup',cat:'health',due:daysOut(5),priority:'normal',done:false,rainCheck:false,rainNote:null,rainDate:null,hasGift:false,registryUrl:null,giftEvent:null,hasShopping:false,shopProfile:null,hasList:false,savedList:null,listTemplateId:null,hasDining:false,hasTravel:false,restaurantNote:null,travelNote:null,diningOccasion:null},
+  {id:'s3',title:"Sarah's baby shower",cat:'family',due:daysOut(8),priority:'high',done:false,rainCheck:false,rainNote:null,rainDate:null,hasGift:true,registryUrl:null,giftEvent:'baby shower',hasShopping:false,shopProfile:null,hasList:false,savedList:null,listTemplateId:null,hasDining:false,hasTravel:false,restaurantNote:null,travelNote:null,diningOccasion:null},
+  {id:'s4',title:'Weekly grocery shopping',cat:'home',due:daysOut(1),priority:'normal',done:false,rainCheck:false,rainNote:null,rainDate:null,hasGift:false,registryUrl:null,giftEvent:null,hasShopping:true,shopProfile:'grocery',hasList:true,listTemplateId:'grocery',savedList:[
+    {id:1,text:'Bananas',checked:false,section:'Produce'},{id:2,text:'Spinach',checked:false,section:'Produce'},
+    {id:3,text:'Avocados',checked:true,section:'Produce'},{id:4,text:'Eggs',checked:false,section:'Dairy & Eggs'},
+    {id:5,text:'Milk',checked:false,section:'Dairy & Eggs'},{id:6,text:'Butter',checked:true,section:'Dairy & Eggs'},
+    {id:7,text:'Chicken breast',checked:false,section:'Meat & Seafood'},{id:8,text:'Bread',checked:false,section:'Pantry'},
+    {id:9,text:'Pasta',checked:false,section:'Pantry'},{id:10,text:'Coffee',checked:true,section:'Pantry'},
+  ],hasDining:false,hasTravel:false,restaurantNote:null,travelNote:null,diningOccasion:null},
+  {id:'s5',title:'10th Anniversary dinner',cat:'family',due:daysOut(6),priority:'high',done:false,rainCheck:false,rainNote:null,rainDate:null,hasGift:false,registryUrl:null,giftEvent:null,hasShopping:false,shopProfile:null,hasList:false,savedList:null,listTemplateId:null,hasDining:true,hasTravel:true,restaurantNote:'Considering Nobu or Le Bernardin — book by Friday',travelNote:'Weekend getaway — check hotels in NYC',diningOccasion:'anniversary',hasWork:false,workTypes:null,workNotes:null,workEvent:null},
+  {id:'s6',title:"Jake & Emma's wedding",cat:'family',due:daysOut(14),priority:'normal',done:false,rainCheck:false,rainNote:null,rainDate:null,hasGift:true,registryUrl:'https://www.zola.com',giftEvent:'wedding',hasShopping:false,shopProfile:null,hasList:false,savedList:null,listTemplateId:null,hasDining:false,hasTravel:false,restaurantNote:null,travelNote:null,diningOccasion:null,hasWork:false,workTypes:null,workNotes:null,workEvent:null},
+  {id:'s7',title:'Q3 Sales Conference — Chicago',cat:'work',due:daysOut(9),priority:'high',done:false,rainCheck:false,rainNote:null,rainDate:null,hasGift:false,registryUrl:null,giftEvent:null,hasShopping:false,shopProfile:null,hasList:false,savedList:null,listTemplateId:null,hasDining:false,hasTravel:false,restaurantNote:null,travelNote:null,diningOccasion:null,hasWork:true,workTypes:['flight','hotel','dinner','expense'],workNotes:{flight:'Google Flights — Mon early AM into ORD',hotel:'Marriott Magnificent Mile — checking rates',dinner:'Client dinner Wed night — need OpenTable reservation',expense:'Submit receipts to Concur by end of week'},workEvent:'conference'},
+];
+let items=JSON.parse(localStorage.getItem('obliga-v8')||'null')||SEED;
+let nextId=Date.now();
+let userName=localStorage.getItem('obliga-name')||'';
+let streak=parseInt(localStorage.getItem('obliga-streak')||'0');
+let lastActive=localStorage.getItem('obliga-last-active')||'';
+let completedToday=parseInt(localStorage.getItem('obliga-completed-today')||'0');
+let totalCompleted=parseInt(localStorage.getItem('obliga-total-completed')||'0');
+let reviewDismissed=localStorage.getItem('obliga-review-dismissed')==='1';
+let rcHeroDismissed=localStorage.getItem('obliga-rc-hero')==='1';
+let digestDismissed=localStorage.getItem('obliga-digest-'+new Date().toDateString())==='1';
+let onboardingDone=localStorage.getItem('obliga-onboarded')==='1';
+
+function save(){localStorage.setItem('obliga-v8',JSON.stringify(items))}
+
+/* ─── PILLAR 1: ONBOARDING ─── */
+function nextSlide(){
+  obSlide=Math.min(obSlide+1,2);
+  document.querySelectorAll('.ob-slide').forEach((s,i)=>s.classList.toggle('active',i===obSlide));
+  document.querySelectorAll('.ob-step-dot').forEach((d,i)=>d.classList.toggle('active',i===obSlide));
+}
+function finishOnboarding(){
+  const n=document.getElementById('ob-name').value.trim();
+  if(n){userName=n;localStorage.setItem('obliga-name',n)}
+  localStorage.setItem('obliga-onboarded','1');
+  onboardingDone=true;
+  // Hide the overlay
+  const ob=document.getElementById('onboarding');
+  ob.classList.add('hidden');
+  ob.style.display='none'; // belt-and-suspenders for mobile
+  // Ensure body scroll is restored
+  document.body.style.overflow='';
+  document.documentElement.style.overflow='';
+  // Fully initialize app
+  updateStreak();
+  // Force a fresh render with a tiny delay to let the DOM settle on mobile
+  setTimeout(function(){
+    render();
+    showDigest();
+    showToast('👋 Welcome'+(userName?' '+userName:'')+'! Your obligations are ready.');
+  },50);
+}
+
+/* ─── PILLAR 3: STREAK ─── */
+function updateStreak(){
+  const today=new Date().toDateString();
+  const yesterday=new Date(Date.now()-86400000).toDateString();
+  if(lastActive===today){/* same day, no change */}
+  else if(lastActive===yesterday){streak++;localStorage.setItem('obliga-streak',streak)}
+  else if(lastActive!==today){streak=1;localStorage.setItem('obliga-streak',streak)}
+  lastActive=today;
+  localStorage.setItem('obliga-last-active',today);
+  document.getElementById('streak-count').textContent=streak;
+}
+
+/* ─── PILLAR 3: DAILY DIGEST ─── */
+function showDigest(){
+  if(digestDismissed){document.getElementById('digest-banner').classList.add('hidden');return}
+  const today=new Date();
+  const hour=today.getHours();
+  const greeting=hour<12?'Good morning'+(userName?' '+userName:'')+'!':hour<17?'Good afternoon'+(userName?' '+userName:'')+'!':'Good evening'+(userName?' '+userName:'')+'!';
+  const overdue=items.filter(i=>!i.done&&!i.rainCheck&&i.due&&i.due<today.toISOString().slice(0,10)).length;
+  const dueToday=items.filter(i=>!i.done&&!i.rainCheck&&i.due===today.toISOString().slice(0,10)).length;
+  const upcoming=items.filter(i=>!i.done&&!i.rainCheck&&i.due&&i.due>today.toISOString().slice(0,10)).length;
+  let msg='';
+  if(overdue>0)msg=`You have ${overdue} overdue obligation${overdue>1?'s':''}${dueToday>0?` and ${dueToday} due today`:''}. Let's clear them.`;
+  else if(dueToday>0)msg=`${dueToday} obligation${dueToday>1?'s':''}  due today.${upcoming>0?` Plus ${upcoming} coming up.`:''}`;
+  else if(upcoming>0)msg=`All clear for today! ${upcoming} obligation${upcoming>1?'s':''}  coming up.`;
+  else msg='All obligations cleared. Great work — keep the streak going!';
+  document.getElementById('digest-title').textContent=greeting;
+  document.getElementById('digest-text').textContent=msg;
+}
+function dismissDigest(){
+  localStorage.setItem('obliga-digest-'+new Date().toDateString(),'1');
+  document.getElementById('digest-banner').classList.add('hidden');
+}
+
+/* ─── SETTINGS SYSTEM ─── */
+const LANGUAGES=[
+  {code:'en',flag:'🇺🇸',name:'English',native:'English'},
+  {code:'es',flag:'🇪🇸',name:'Spanish',native:'Español'},
+  {code:'fr',flag:'🇫🇷',name:'French',native:'Français'},
+  {code:'de',flag:'🇩🇪',name:'German',native:'Deutsch'},
+  {code:'pt',flag:'🇧🇷',name:'Portuguese',native:'Português'},
+  {code:'it',flag:'🇮🇹',name:'Italian',native:'Italiano'},
+  {code:'ja',flag:'🇯🇵',name:'Japanese',native:'日本語'},
+  {code:'zh',flag:'🇨🇳',name:'Chinese',native:'中文'},
+  {code:'ko',flag:'🇰🇷',name:'Korean',native:'한국어'},
+  {code:'ar',flag:'🇸🇦',name:'Arabic',native:'العربية'},
+  {code:'hi',flag:'🇮🇳',name:'Hindi',native:'हिन्दी'},
+  {code:'ru',flag:'🇷🇺',name:'Russian',native:'Русский'},
+  {code:'nl',flag:'🇳🇱',name:'Dutch',native:'Nederlands'},
+  {code:'pl',flag:'🇵🇱',name:'Polish',native:'Polski'},
+  {code:'tr',flag:'🇹🇷',name:'Turkish',native:'Türkçe'},
+  {code:'sv',flag:'🇸🇪',name:'Swedish',native:'Svenska'},
+];
+
+// Load persisted settings
+let settingsData={
+  connectedCals: JSON.parse(localStorage.getItem('obliga-cals')||'{}'),
+  icalUrl: localStorage.getItem('obliga-ical-url')||'',
+  lang: localStorage.getItem('obliga-lang')||'en',
+  pushEnabled: localStorage.getItem('obliga-push')==='1',
+};
+
+function saveSettings(){
+  localStorage.setItem('obliga-cals',JSON.stringify(settingsData.connectedCals));
+  localStorage.setItem('obliga-lang',settingsData.lang);
+  if(settingsData.icalUrl)localStorage.setItem('obliga-ical-url',settingsData.icalUrl);
+}
+
+function openSettings(){
+  // Populate name field
+  document.getElementById('settings-name').value=userName||'';
+  // Populate calendar statuses
+  updateCalUI();
+  // Populate language list
+  buildLangList();
+  // Push status
+  updatePushUI();
+  // Open panel
+  document.getElementById('settings-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeSettings(){
+  document.getElementById('settings-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function saveName(){
+  const val=document.getElementById('settings-name').value.trim();
+  if(!val){showToast('Please enter a name');return;}
+  userName=val;
+  localStorage.setItem('obliga-name',val);
+  showToast('✓ Name updated to '+val);
+  // Update digest greeting if visible
+  showDigest();
+}
+
+/* Calendar management */
+const CAL_META={
+  google:{name:'Google Calendar',authUrl:'https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/calendar.readonly&response_type=code'},
+  outlook:{name:'Outlook Calendar',authUrl:'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?scope=Calendars.Read'},
+  apple:{name:'Apple Calendar',authUrl:'https://appleid.apple.com/auth/authorize'},
+  yahoo:{name:'Yahoo Calendar',authUrl:'https://api.login.yahoo.com/oauth2/request_auth'},
+};
+
+function updateCalUI(){
+  Object.keys(CAL_META).forEach(key=>{
+    const connected=settingsData.connectedCals[key];
+    const statusEl=document.getElementById(key==='outlook'?'outlook-status':`${key==='apple'?'apple':key==='yahoo'?'yahoo':'gcal'}-status`);
+    const btnEl=document.getElementById(key==='google'?'gcal-btn':key+'-btn');
+    if(statusEl){
+      statusEl.textContent=connected?'Connected · syncing every 15 min':'Not connected';
+      statusEl.style.color=connected?'#15803d':'#888';
+    }
+    if(btnEl){
+      if(connected){
+        btnEl.textContent='Disconnect';
+        btnEl.className='cal-connect-btn disconnect';
+      } else {
+        btnEl.textContent='Connect';
+        btnEl.className='cal-connect-btn';
+      }
+    }
+  });
+  // iCal
+  const icalStatus=document.getElementById('ical-status');
+  if(icalStatus){
+    icalStatus.textContent=settingsData.icalUrl?'Connected: '+settingsData.icalUrl.slice(0,30)+'…':'Add any .ics calendar URL';
+    icalStatus.style.color=settingsData.icalUrl?'#15803d':'#888';
+  }
+}
+
+function toggleCal(key){
+  const isConnected=settingsData.connectedCals[key];
+  if(isConnected){
+    // Disconnect
+    delete settingsData.connectedCals[key];
+    saveSettings();
+    updateCalUI();
+    showToast('📅 '+CAL_META[key].name+' disconnected');
+  } else {
+    // In the standalone HTML version, simulate connection with a confirmation
+    // In the full Next.js app this would trigger OAuth
+    const confirmed=confirm('Connect '+CAL_META[key].name+'?\n\nIn the full Obliga app this opens OAuth. For now we\'ll simulate the connection.');
+    if(confirmed){
+      settingsData.connectedCals[key]=true;
+      saveSettings();
+      updateCalUI();
+      showToast('✅ '+CAL_META[key].name+' connected!');
+    }
+  }
+}
+
+function toggleICalInput(){
+  const row=document.getElementById('ical-url-row');
+  row.classList.toggle('open');
+  if(row.classList.contains('open')){
+    document.getElementById('ical-url-input').value=settingsData.icalUrl||'';
+    setTimeout(()=>document.getElementById('ical-url-input').focus(),100);
+  }
+}
+
+function saveICalUrl(){
+  const url=document.getElementById('ical-url-input').value.trim();
+  if(!url){showToast('Please enter a calendar URL');return;}
+  if(!url.startsWith('http')){showToast('Please enter a valid URL starting with https://');return;}
+  settingsData.icalUrl=url;
+  saveSettings();
+  updateCalUI();
+  document.getElementById('ical-url-row').classList.remove('open');
+  document.getElementById('ical-btn').textContent='Connected';
+  document.getElementById('ical-btn').className='cal-connect-btn connected';
+  showToast('📅 iCal calendar added');
+}
+
+/* Language */
+function buildLangList(){
+  const section=document.getElementById('lang-section');
+  section.innerHTML=LANGUAGES.map(l=>`
+    <div class="lang-option" onclick="setLanguage('${l.code}')">
+      <span class="lang-flag">${l.flag}</span>
+      <div style="flex:1">
+        <div class="lang-name">${l.name}</div>
+        <div class="lang-native">${l.native}</div>
+      </div>
+      <div class="lang-check${settingsData.lang===l.code?' selected':''}" id="lang-check-${l.code}"></div>
+    </div>`).join('');
+}
+
+function setLanguage(code){
+  settingsData.lang=code;
+  saveSettings();
+  // Update all check marks
+  document.querySelectorAll('[id^="lang-check-"]').forEach(el=>el.classList.remove('selected'));
+  const check=document.getElementById('lang-check-'+code);
+  if(check)check.classList.add('selected');
+  const lang=LANGUAGES.find(l=>l.code===code);
+  if(lang)showToast('🌐 Language set to '+lang.name);
+}
+
+/* Push notifications */
+function updatePushUI(){
+  const btn=document.getElementById('push-btn');
+  const txt=document.getElementById('push-status-text');
+  if(settingsData.pushEnabled){
+    btn.textContent='Enabled';
+    btn.className='cal-connect-btn connected';
+    txt.textContent='Receiving reminders for due obligations';
+  } else {
+    btn.textContent='Enable';
+    btn.className='cal-connect-btn';
+    txt.textContent='Get reminders for due obligations';
+  }
+}
+
+function togglePush(){
+  if(settingsData.pushEnabled){
+    settingsData.pushEnabled=false;
+    localStorage.setItem('obliga-push','0');
+    updatePushUI();
+    showToast('🔕 Push notifications disabled');
+  } else {
+    if('Notification' in window){
+      Notification.requestPermission().then(perm=>{
+        if(perm==='granted'){
+          settingsData.pushEnabled=true;
+          localStorage.setItem('obliga-push','1');
+          updatePushUI();
+          showToast('🔔 Push notifications enabled!');
+        } else {
+          showToast('Notifications blocked — please enable in your browser settings');
+        }
+      });
+    } else {
+      settingsData.pushEnabled=true;
+      localStorage.setItem('obliga-push','1');
+      updatePushUI();
+      showToast('🔔 Notifications enabled');
+    }
+  }
+}
+
+/* Export & clear */
+function exportData(){
+  const blob=new Blob([JSON.stringify({items,settings:settingsData,userName,streak,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='obliga-export-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  showToast('📦 Data exported successfully');
+}
+
+function confirmClearData(){
+  if(confirm('Clear all obligations and settings? This cannot be undone.')){
+    localStorage.clear();
+    showToast('🗑️ All data cleared');
+    setTimeout(()=>location.reload(),1200);
+  }
+}
+
+// Close settings on back button / swipe
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.getElementById('settings-overlay').classList.contains('open'))closeSettings();
+});
+
+/* ─── PILLAR 4: INVITE ─── */
+function openInvite(){document.getElementById('invite-backdrop').classList.add('open');document.getElementById('invite-url').textContent='obliga.app/join?ref='+(userName||'friend').toLowerCase().replace(/\s/,'')}
+function closeInvite(){document.getElementById('invite-backdrop').classList.remove('open')}
+function copyInvite(){
+  const url=document.getElementById('invite-url').textContent;
+  navigator.clipboard.writeText(url).catch(()=>{});
+  showToast('🔗 Link copied! Share it with a friend');
+  closeInvite();
+}
+function shareInvite(){
+  const url=document.getElementById('invite-url').textContent;
+  if(navigator.share){navigator.share({title:'Join me on Obliga',text:'I use Obliga to manage life obligations and rain check plans. Try it free:',url})}
+  else{copyInvite()}
+}
+
+/* ─── PILLAR 5: REVIEW NUDGE ─── */
+function checkReviewNudge(){
+  if(reviewDismissed)return;
+  if(totalCompleted>=5&&totalCompleted%5===0){
+    document.getElementById('review-nudge').classList.add('visible');
+  }
+}
+function rateApp(stars){
+  showToast('⭐ Thank you for the '+stars+'-star rating!');
+  reviewDismissed=true;
+  localStorage.setItem('obliga-review-dismissed','1');
+  document.getElementById('review-nudge').classList.remove('visible');
+}
+function dismissReview(){
+  document.getElementById('review-nudge').classList.remove('visible');
+  localStorage.setItem('obliga-review-dismissed','1');
+  reviewDismissed=true;
+}
+
+/* ─── RC HERO BANNER (Pillar 2) ─── */
+function dismissRCHero(){
+  localStorage.setItem('obliga-rc-hero','1');
+  document.getElementById('rc-hero').style.display='none';
+}
+if(rcHeroDismissed){document.getElementById('rc-hero').style.display='none'}
+
+/* ─── WEEKLY WRAP (Pillar 3) ─── */
+function openWrap(){
+  const el=document.getElementById('wrap-stats');
+  const done=items.filter(i=>i.done).length;
+  const rc=items.filter(i=>i.rainCheck&&!i.done).length;
+  const overdue=items.filter(i=>!i.done&&!i.rainCheck&&i.due&&i.due<new Date().toISOString().slice(0,10)).length;
+  el.innerHTML=[
+    ['Obligations completed',done],
+    ['Current streak',streak+' days 🔥'],
+    ['Rain checks pending',rc],
+    ['Overdue obligations',overdue],
+    ['Total added',items.length],
+  ].map(([l,v])=>`<div class="wrap-stat"><span class="wrap-stat-label">${l}</span><span class="wrap-stat-val">${v}</span></div>`).join('');
+  document.getElementById('wrap-backdrop').classList.add('open');
+}
+function closeWrap(){document.getElementById('wrap-backdrop').classList.remove('open')}
+
+/* ─── GIFT / REGISTRY SYSTEM ─── */
+const GIFT_EVENTS=[
+  {keywords:['birthday','bday','b-day'],icon:'🎂',label:'Birthday',eventType:'birthday'},
+  {keywords:['baby shower','baby-shower','babyshower'],icon:'🍼',label:'Baby shower',eventType:'baby shower'},
+  {keywords:['anniversary'],icon:'💍',label:'Anniversary',eventType:'anniversary'},
+  {keywords:['engagement','engaged'],icon:'💍',label:'Engagement party',eventType:'engagement'},
+  {keywords:['wedding','bridal shower','bachelorette'],icon:'💒',label:'Wedding',eventType:'wedding'},
+  {keywords:['housewarming','house warming','house-warming'],icon:'🏠',label:'Housewarming',eventType:'housewarming'},
+  {keywords:['graduation','grad party'],icon:'🎓',label:'Graduation',eventType:'graduation'},
+  {keywords:['christmas','xmas','holiday party','secret santa'],icon:'🎄',label:'Holiday gift',eventType:'holiday'},
+];
+
+const REGISTRY_SITES=[
+  {name:'Amazon',icon:'📦',url:'https://www.amazon.com/wedding/search',desc:'Largest selection',color:'#FF9900'},
+  {name:'Target',icon:'🎯',url:'https://www.target.com/gift-registry/find-a-registry',desc:'Home & lifestyle',color:'#CC0000'},
+  {name:'Zola',icon:'💒',url:'https://www.zola.com/registry/search',desc:'Wedding specialist',color:'#10B981'},
+  {name:'Babylist',icon:'🍼',url:'https://www.babylist.com',desc:'Baby registries',color:'#8B5CF6'},
+  {name:'Bed Bath & Beyond',icon:'🛋️',url:'https://www.bedbathandbeyond.com/store/gift-registry/lookup',desc:'Home essentials',color:'#1D4ED8'},
+  {name:'Crate & Barrel',icon:'🏠',url:'https://www.crateandbarrel.com/gift-registry/search',desc:'Modern home',color:'#1a1a18'},
+  {name:'Williams Sonoma',icon:'🍳',url:'https://www.williams-sonoma.com/registry/reg-search.html',desc:'Kitchen & dining',color:'#92400E'},
+  {name:'Etsy',icon:'🎨',url:'https://www.etsy.com',desc:'Unique & handmade',color:'#F59E0B'},
+];
+
+const SHOP_SITES=[
+  {name:'Amazon',icon:'📦',url:'https://www.amazon.com/s?k=gifts',desc:'Everything & more'},
+  {name:'Target',icon:'🎯',url:'https://www.target.com/c/gift-ideas/-/N-5xtzx',desc:'Gifts for everyone'},
+  {name:'Etsy',icon:'🎨',url:'https://www.etsy.com/search?q=gifts',desc:'Unique handmade gifts'},
+  {name:'Nordstrom',icon:'👗',url:'https://www.nordstrom.com/browse/gifts',desc:'Fashion & luxury'},
+  {name:'Uncommon Goods',icon:'✨',url:'https://www.uncommongoods.com',desc:'Creative & quirky'},
+  {name:'Walmart',icon:'🛒',url:'https://www.walmart.com/browse/gifts',desc:'Every budget'},
+  {name:'Anthropologie',icon:'🌸',url:'https://www.anthropologie.com/gifts',desc:'Boho & lifestyle'},
+  {name:'Best Buy',icon:'📱',url:'https://www.bestbuy.com/site/gift-ideas',desc:'Tech gifts'},
+];
+
+let giftPendingItemId=null;
+let giftEventMeta=null;
+
+function detectGiftEvent(title){
+  const lower=title.toLowerCase();
+  for(const ev of GIFT_EVENTS){
+    if(ev.keywords.some(k=>lower.includes(k)))return ev;
+  }
+  return null;
+}
+
+function openGiftModal(itemId,eventMeta){
+  giftPendingItemId=itemId;
+  giftEventMeta=eventMeta;
+  document.getElementById('gift-icon').textContent=eventMeta.icon;
+  document.getElementById('gift-title').textContent='Gift needed?';
+  document.getElementById('gift-badge').innerHTML=eventMeta.icon+' '+eventMeta.label;
+  document.getElementById('gift-s1-sub').textContent='We noticed this looks like a '+eventMeta.eventType+'. Would you like help finding or tracking a gift?';
+  document.getElementById('registry-url-input').value='';
+  document.getElementById('registry-saved').classList.remove('show');
+
+  // Build registry presets (context-aware)
+  const presetsEl=document.getElementById('registry-presets');
+  const relevant=REGISTRY_SITES.filter(s=>{
+    if(eventMeta.eventType==='baby shower')return['Babylist','Amazon','Target'].includes(s.name);
+    if(eventMeta.eventType==='wedding'||eventMeta.eventType==='engagement')return['Zola','Amazon','Target','Crate & Barrel','Williams Sonoma'].includes(s.name);
+    if(eventMeta.eventType==='housewarming')return['Amazon','Target','Crate & Barrel','Bed Bath & Beyond'].includes(s.name);
+    return['Amazon','Target','Zola','Etsy'].includes(s.name);
+  });
+  presetsEl.innerHTML=relevant.map(s=>`<button class="registry-preset" onclick="window.open('${s.url}','_blank')" title="${s.desc}">${s.icon} ${s.name}</button>`).join('');
+
+  // Build shop grid
+  const shopEl=document.getElementById('shop-grid');
+  const shopSites=SHOP_SITES.filter(s=>{
+    if(eventMeta.eventType==='baby shower')return['Amazon','Target','Etsy','Walmart','Uncommon Goods','Nordstrom'].includes(s.name);
+    if(eventMeta.eventType==='wedding'||eventMeta.eventType==='engagement')return['Amazon','Nordstrom','Etsy','Anthropologie','Uncommon Goods','Target'].includes(s.name);
+    if(eventMeta.eventType==='housewarming')return['Amazon','Target','Etsy','Walmart','Anthropologie','Uncommon Goods'].includes(s.name);
+    if(eventMeta.eventType==='holiday')return['Amazon','Target','Walmart','Etsy','Best Buy','Nordstrom'].includes(s.name);
+    return SHOP_SITES;
+  }).slice(0,6);
+  shopEl.innerHTML=shopSites.map(s=>`<a class="shop-card" href="${s.url}" target="_blank" rel="noopener"><div class="shop-logo">${s.icon}</div><div class="shop-name">${s.name}</div><div class="shop-desc">${s.desc}</div></a>`).join('');
+
+  giftStep('s1');
+  document.getElementById('gift-backdrop').classList.add('open');
+}
+
+function giftStep(step){
+  document.querySelectorAll('.gift-section').forEach(s=>s.classList.remove('active'));
+  if(step==='s1')document.getElementById('gift-s1').classList.add('active');
+  else if(step==='registry')document.getElementById('gift-s-registry').classList.add('active');
+  else if(step==='shop')document.getElementById('gift-s-shop').classList.add('active');
+  else if(step==='skip'){
+    document.getElementById('gift-s-skip').classList.add('active');
+    setTimeout(closeGift,1200);
+  }
+}
+
+function saveRegistry(){
+  const url=document.getElementById('registry-url-input').value.trim();
+  const item=items.find(x=>x.id===giftPendingItemId);
+  if(item){
+    if(url)item.registryUrl=url;
+    item.hasGift=true;
+    item.giftEvent=giftEventMeta.eventType;
+    save();render();
+  }
+  document.getElementById('registry-saved').classList.add('show');
+  setTimeout(closeGift,1500);
+  showToast('🎁 Registry saved — tap the badge on the item to open it');
+}
+
+function openRegistry(id){
+  const item=items.find(x=>x.id===id);
+  if(item&&item.registryUrl)window.open(item.registryUrl,'_blank');
+}
+
+function closeGift(){
+  document.getElementById('gift-backdrop').classList.remove('open');
+  giftPendingItemId=null;
+}
+
+/* ─── SHOPPING DETECTION SYSTEM ─── */
+const SHOPPING_PROFILES=[
+  {
+    id:'grocery',
+    keywords:['grocery','groceries','grocery shopping','food shopping','supermarket','food run','whole foods','trader joe','costco run','meal prep','meal planning','food pickup'],
+    icon:'🛒',
+    label:'Grocery shopping',
+    title:'Grocery & food delivery',
+    sub:'Order groceries online or get food delivered — pick your store.',
+    tabs:['Delivery','Grocery pickup','Bulk & warehouse'],
+    panels:{
+      'Delivery':[
+        {name:'Instacart',icon:'🛒',url:'https://www.instacart.com',desc:'Same-day delivery',featured:true},
+        {name:'DoorDash',icon:'🚪',url:'https://www.doordash.com',desc:'Groceries & restaurants'},
+        {name:'Uber Eats',icon:'🍔',url:'https://www.ubereats.com',desc:'Food & grocery delivery'},
+        {name:'Grubhub',icon:'🥡',url:'https://www.grubhub.com',desc:'Restaurant delivery'},
+        {name:'Amazon Fresh',icon:'📦',url:'https://www.amazon.com/fresh',desc:'Prime members get fast delivery'},
+        {name:'Gopuff',icon:'⚡',url:'https://www.gopuff.com',desc:'30-min convenience delivery'},
+      ],
+      'Grocery pickup':[
+        {name:'Walmart Grocery',icon:'🛍️',url:'https://www.walmart.com/grocery',desc:'Free curbside pickup',featured:true},
+        {name:'Kroger',icon:'🏪',url:'https://www.kroger.com/cl/pickup',desc:'Pickup & delivery'},
+        {name:'Safeway',icon:'🏬',url:'https://www.safeway.com/shopnow.html',desc:'Same-day options'},
+        {name:'Whole Foods',icon:'🌿',url:'https://www.wholefoodsmarket.com/stores/list',desc:'Via Prime & Instacart'},
+        {name:'Target',icon:'🎯',url:'https://www.target.com/c/grocery/-/N-5xt1a',desc:'Drive-up pickup'},
+        {name:'Sprouts',icon:'🥦',url:'https://shop.sprouts.com',desc:'Organic & natural'},
+      ],
+      'Bulk & warehouse':[
+        {name:'Costco',icon:'🏭',url:'https://www.costco.com',desc:'Bulk savings'},
+        {name:"Sam's Club",icon:'🏬',url:'https://www.samsclub.com',desc:'Warehouse deals'},
+        {name:'Amazon',icon:'📦',url:'https://www.amazon.com/s?k=groceries',desc:'Subscribe & save'},
+        {name:'Boxed',icon:'📫',url:'https://www.boxed.com',desc:'No membership needed'},
+      ],
+    },
+  },
+  {
+    id:'backtoschool',
+    keywords:['back to school','back-to-school','school shopping','school supplies','dorm shopping','college shopping','school list','supplies shopping'],
+    icon:'🎒',
+    label:'Back to school',
+    title:'Back to school shopping',
+    sub:'Find everything from supplies to electronics and clothing.',
+    tabs:['Supplies','Electronics','Clothing','Books'],
+    panels:{
+      'Supplies':[
+        {name:'Amazon',icon:'📦',url:'https://www.amazon.com/s?k=back+to+school+supplies',desc:'Widest selection',featured:true},
+        {name:'Target',icon:'🎯',url:'https://www.target.com/c/school-supplies/-/N-5xt1c',desc:'Great for lists'},
+        {name:'Walmart',icon:'🛒',url:'https://www.walmart.com/browse/back-to-school',desc:'Budget-friendly'},
+        {name:'Staples',icon:'📎',url:'https://www.staples.com/back-to-school',desc:'Office & school supplies'},
+        {name:'Dollar Tree',icon:'🌳',url:'https://www.dollartree.com/back-to-school',desc:'Everything $1.25+'},
+        {name:'Five Below',icon:'5️⃣',url:'https://www.fivebelow.com/content/back-to-school',desc:'Trendy for teens'},
+      ],
+      'Electronics':[
+        {name:'Best Buy',icon:'📱',url:'https://www.bestbuy.com/site/shop/back-to-school',desc:'Laptops & tablets',featured:true},
+        {name:'Apple',icon:'🍎',url:'https://www.apple.com/shop/back-to-school',desc:'Student discounts'},
+        {name:'Amazon',icon:'📦',url:'https://www.amazon.com/s?k=school+electronics',desc:'All brands & prices'},
+        {name:'Walmart Tech',icon:'💻',url:'https://www.walmart.com/browse/electronics',desc:'Budget laptops & tablets'},
+      ],
+      'Clothing':[
+        {name:'Old Navy',icon:'👖',url:'https://oldnavy.gap.com/browse/category.do?cid=1006850',desc:'Affordable & durable',featured:true},
+        {name:'H&M',icon:'👕',url:'https://www2.hm.com/en_us/sale/kids-sale.html',desc:'Trendy & affordable'},
+        {name:'Target',icon:'🎯',url:'https://www.target.com/c/kids-clothing/-/N-55v8f',desc:'Cat & Jack & more'},
+        {name:'Zappos',icon:'👟',url:'https://www.zappos.com/back-to-school',desc:'Shoes & sneakers'},
+        {name:'Carter\'s',icon:'🧸',url:'https://www.carters.com',desc:'Little kids essentials'},
+        {name:'Gap',icon:'🧥',url:'https://www.gap.com/browse/category.do?cid=1025654',desc:'Classic staples'},
+      ],
+      'Books':[
+        {name:'Amazon Books',icon:'📚',url:'https://www.amazon.com/s?k=school+textbooks',desc:'New & used textbooks',featured:true},
+        {name:'Chegg',icon:'🎓',url:'https://www.chegg.com/textbooks',desc:'Rent or buy textbooks'},
+        {name:'ThriftBooks',icon:'♻️',url:'https://www.thriftbooks.com',desc:'Cheap used books'},
+        {name:'Barnes & Noble',icon:'📖',url:'https://www.barnesandnoble.com/b/textbooks/_/N-8q8',desc:'New textbooks & more'},
+      ],
+    },
+  },
+  {
+    id:'general',
+    keywords:['shopping','shop online','online shopping','buy','order online','purchase','pick up','need to buy','get some','grab some','stock up'],
+    icon:'🛍️',
+    label:'Shopping',
+    title:'Shop online',
+    sub:'Pick your favorite store and start shopping.',
+    tabs:['General','Fashion','Home','Electronics','Deals'],
+    panels:{
+      'General':[
+        {name:'Amazon',icon:'📦',url:'https://www.amazon.com',desc:'Biggest selection',featured:true},
+        {name:'Target',icon:'🎯',url:'https://www.target.com',desc:'Style meets value'},
+        {name:'Walmart',icon:'🛒',url:'https://www.walmart.com',desc:'Everyday low prices'},
+        {name:'Costco',icon:'🏭',url:'https://www.costco.com',desc:'Bulk & warehouse savings'},
+        {name:'eBay',icon:'🔨',url:'https://www.ebay.com',desc:'New, used & auction'},
+        {name:'Etsy',icon:'🎨',url:'https://www.etsy.com',desc:'Handmade & unique'},
+      ],
+      'Fashion':[
+        {name:'Nordstrom',icon:'👗',url:'https://www.nordstrom.com',desc:'Premium fashion',featured:true},
+        {name:'ASOS',icon:'👔',url:'https://www.asos.com',desc:'Trendy & affordable'},
+        {name:'Zappos',icon:'👟',url:'https://www.zappos.com',desc:'Shoes & apparel'},
+        {name:'H&M',icon:'👕',url:'https://www2.hm.com/en_us/index.html',desc:'Fast fashion'},
+        {name:'Anthropologie',icon:'🌸',url:'https://www.anthropologie.com',desc:'Boho & lifestyle'},
+        {name:'Zara',icon:'🧣',url:'https://www.zara.com/us',desc:'Contemporary style'},
+      ],
+      'Home':[
+        {name:'Wayfair',icon:'🛋️',url:'https://www.wayfair.com',desc:'Furniture & decor',featured:true},
+        {name:'IKEA',icon:'🪑',url:'https://www.ikea.com/us',desc:'Modern & affordable'},
+        {name:'Crate & Barrel',icon:'🏠',url:'https://www.crateandbarrel.com',desc:'Modern home'},
+        {name:'HomeGoods',icon:'🪴',url:'https://www.homegoods.com',desc:'Off-price decor'},
+        {name:'Overstock',icon:'📦',url:'https://www.overstock.com',desc:'Deep discounts'},
+        {name:'Pottery Barn',icon:'🕯️',url:'https://www.potterybarn.com',desc:'Classic home style'},
+      ],
+      'Electronics':[
+        {name:'Best Buy',icon:'📱',url:'https://www.bestbuy.com',desc:'Top electronics',featured:true},
+        {name:'Apple',icon:'🍎',url:'https://www.apple.com/shop',desc:'Apple products'},
+        {name:'Newegg',icon:'💻',url:'https://www.newegg.com',desc:'PC & tech components'},
+        {name:'B&H Photo',icon:'📷',url:'https://www.bhphotovideo.com',desc:'Photography & pro gear'},
+        {name:'Amazon Tech',icon:'📦',url:'https://www.amazon.com/s?k=electronics',desc:'All brands & prices'},
+        {name:'Samsung',icon:'📟',url:'https://www.samsung.com/us/shop',desc:'Samsung direct'},
+      ],
+      'Deals':[
+        {name:'Rakuten',icon:'💸',url:'https://www.rakuten.com',desc:'Cashback on everything',featured:true},
+        {name:'Honey',icon:'🍯',url:'https://www.joinhoney.com',desc:'Auto-apply coupon codes'},
+        {name:'Slickdeals',icon:'🔥',url:'https://slickdeals.net',desc:'Community deal alerts'},
+        {name:'Groupon',icon:'🎟️',url:'https://www.groupon.com',desc:'Local & online deals'},
+        {name:'RetailMeNot',icon:'✂️',url:'https://www.retailmenot.com',desc:'Promo codes & coupons'},
+        {name:'Overstock',icon:'📦',url:'https://www.overstock.com',desc:'Clearance deals'},
+      ],
+    },
+  },
+  {
+    id:'clothes',
+    keywords:['clothes shopping','clothing shopping','outfit','wardrobe','shoes shopping','fashion shopping','new clothes','buy clothes'],
+    icon:'👗',
+    label:'Clothes shopping',
+    title:'Fashion & clothing',
+    sub:'Find your look at these popular fashion destinations.',
+    tabs:['Women','Men','Kids','Shoes'],
+    panels:{
+      'Women':[
+        {name:'Nordstrom',icon:'👗',url:'https://www.nordstrom.com/browse/women',desc:'Designer & premium',featured:true},
+        {name:'ASOS',icon:'✨',url:'https://www.asos.com/women',desc:'Trendy styles'},
+        {name:'Anthropologie',icon:'🌸',url:'https://www.anthropologie.com/en-us/clothing',desc:'Boho & feminine'},
+        {name:'Zara',icon:'🧣',url:'https://www.zara.com/us/en/woman-mkt1653.html',desc:'Contemporary chic'},
+        {name:'H&M Women',icon:'👚',url:'https://www2.hm.com/en_us/women.html',desc:'Affordable fashion'},
+        {name:'Free People',icon:'🦋',url:'https://www.freepeople.com/womens-clothing',desc:'Bohemian style'},
+      ],
+      'Men':[
+        {name:'Nordstrom Men',icon:'👔',url:'https://www.nordstrom.com/browse/men',desc:'Premium menswear',featured:true},
+        {name:'ASOS Men',icon:'🎽',url:'https://www.asos.com/men',desc:'Trendy menswear'},
+        {name:'Banana Republic',icon:'🧥',url:'https://bananarepublic.gap.com/browse/men.do',desc:'Classic professional'},
+        {name:"Levi's",icon:'👖',url:'https://www.levis.com/US/en_US/mens-jeans',desc:'Iconic denim'},
+        {name:'H&M Men',icon:'👕',url:'https://www2.hm.com/en_us/men.html',desc:'Affordable everyday'},
+        {name:'Uniqlo',icon:'🟥',url:'https://www.uniqlo.com/us/en/men',desc:'Minimal essentials'},
+      ],
+      'Kids':[
+        {name:"Carter's",icon:'🧸',url:'https://www.carters.com',desc:'Little ones essentials',featured:true},
+        {name:'Old Navy Kids',icon:'👶',url:'https://oldnavy.gap.com/browse/category.do?cid=1004860',desc:'Durable & fun'},
+        {name:'Target Kids',icon:'🎯',url:'https://www.target.com/c/kids-clothing/-/N-55v8f',desc:'Cat & Jack & more'},
+        {name:'Gap Kids',icon:'🌈',url:'https://www.gap.com/browse/category.do?cid=1025654',desc:'Classic kids styles'},
+        {name:'H&M Kids',icon:'🎨',url:'https://www2.hm.com/en_us/kids.html',desc:'Affordable & colorful'},
+        {name:'Gymboree',icon:'🎪',url:'https://www.gymboree.com',desc:'Play-ready styles'},
+      ],
+      'Shoes':[
+        {name:'Zappos',icon:'👟',url:'https://www.zappos.com',desc:'Biggest shoe selection',featured:true},
+        {name:'Nike',icon:'✔️',url:'https://www.nike.com/w/shoes-y7ok',desc:'Athletic & lifestyle'},
+        {name:'Adidas',icon:'🏃',url:'https://www.adidas.com/us/shoes',desc:'Sport & streetwear'},
+        {name:'DSW',icon:'👠',url:'https://www.dsw.com',desc:'Designer shoe warehouse'},
+        {name:'Steve Madden',icon:'👡',url:'https://www.stevemadden.com',desc:'Trendy footwear'},
+        {name:'Skechers',icon:'👞',url:'https://www.skechers.com',desc:'Comfort & casual'},
+      ],
+    },
+  },
+  {
+    id:'home',
+    keywords:['home shopping','house shopping','furniture shopping','home goods','home decor','decorating','ikea','moving','new apartment','redecorating'],
+    icon:'🏠',
+    label:'Home shopping',
+    title:'Home & furniture',
+    sub:'Furnish and decorate your space at these popular stores.',
+    tabs:['Furniture','Decor','Kitchen','Outdoor'],
+    panels:{
+      'Furniture':[
+        {name:'Wayfair',icon:'🛋️',url:'https://www.wayfair.com/furniture',desc:'Massive selection',featured:true},
+        {name:'IKEA',icon:'🪑',url:'https://www.ikea.com/us/en/cat/furniture-fu001',desc:'Modern & flat-pack'},
+        {name:'Ashley Furniture',icon:'🛏️',url:'https://www.ashleyfurniture.com',desc:'Classic home furniture'},
+        {name:'West Elm',icon:'🏡',url:'https://www.westelm.com',desc:'Modern & sustainable'},
+        {name:'Pottery Barn',icon:'🕯️',url:'https://www.potterybarn.com',desc:'Classic American style'},
+        {name:'Overstock',icon:'📦',url:'https://www.overstock.com/furniture',desc:'Great value'},
+      ],
+      'Decor':[
+        {name:'HomeGoods',icon:'🪴',url:'https://www.homegoods.com',desc:'Off-price finds',featured:true},
+        {name:'Anthropologie Home',icon:'🌸',url:'https://www.anthropologie.com/home',desc:'Artsy & bohemian'},
+        {name:'World Market',icon:'🌍',url:'https://www.worldmarket.com',desc:'Global-inspired décor'},
+        {name:'Pier 1',icon:'🧩',url:'https://www.pier1.com',desc:'Colorful home accents'},
+        {name:'TJ Maxx Home',icon:'🏷️',url:'https://www.tjmaxx.tjx.com/store/index.jsp',desc:'Discount décor'},
+        {name:'Etsy Home',icon:'🎨',url:'https://www.etsy.com/c/home-and-living',desc:'Handmade & unique'},
+      ],
+      'Kitchen':[
+        {name:'Williams Sonoma',icon:'🍳',url:'https://www.williams-sonoma.com',desc:'Premium cookware',featured:true},
+        {name:'Sur La Table',icon:'🥘',url:'https://www.surlatable.com',desc:'Chef-quality tools'},
+        {name:'Crate & Barrel',icon:'🫙',url:'https://www.crateandbarrel.com/kitchen-and-food',desc:'Modern kitchen'},
+        {name:'Amazon Kitchen',icon:'📦',url:'https://www.amazon.com/s?k=kitchen',desc:'Every budget'},
+        {name:'Target Kitchen',icon:'🎯',url:'https://www.target.com/c/kitchen-dining/-/N-z55sr',desc:'Everyday essentials'},
+        {name:'Pampered Chef',icon:'🧑‍🍳',url:'https://www.pamperedchef.com',desc:'Direct sales cookware'},
+      ],
+      'Outdoor':[
+        {name:'Home Depot',icon:'🔨',url:'https://www.homedepot.com/b/Outdoors/N-5yc1vZar4z',desc:'Outdoor essentials',featured:true},
+        {name:'REI',icon:'⛺',url:'https://www.rei.com/category/outdoor-furniture',desc:'Premium outdoor living'},
+        {name:'Wayfair Outdoor',icon:'🪑',url:'https://www.wayfair.com/outdoor',desc:'Patio & garden'},
+        {name:'Lowe\'s Outdoor',icon:'🌿',url:'https://www.lowes.com/l/garden.html',desc:'Garden & patio'},
+        {name:'Pottery Barn Outdoor',icon:'☀️',url:'https://www.potterybarn.com/outdoor',desc:'Stylish patio sets'},
+        {name:'World Market Outdoor',icon:'🌴',url:'https://www.worldmarket.com/category/furniture-and-decor/outdoor.do',desc:'Global-inspired'},
+      ],
+    },
+  },
+  {
+    id:'tech',
+    keywords:['tech shopping','electronics shopping','buy laptop','new phone','buy iphone','buy ipad','computer shopping','gadgets','buy headphones'],
+    icon:'💻',
+    label:'Tech shopping',
+    title:'Electronics & tech',
+    sub:'Find the best tech deals at these top retailers.',
+    tabs:['All Electronics','Computers','Phones','Audio','Gaming'],
+    panels:{
+      'All Electronics':[
+        {name:'Best Buy',icon:'📱',url:'https://www.bestbuy.com',desc:'#1 electronics retailer',featured:true},
+        {name:'Amazon Tech',icon:'📦',url:'https://www.amazon.com/s?k=electronics',desc:'All brands & prices'},
+        {name:'Newegg',icon:'💻',url:'https://www.newegg.com',desc:'PC components & builds'},
+        {name:'B&H Photo',icon:'📷',url:'https://www.bhphotovideo.com',desc:'Photography & pro AV'},
+        {name:'Costco Tech',icon:'🏭',url:'https://www.costco.com/electronics.html',desc:'Member savings'},
+        {name:'Walmart Electronics',icon:'🛒',url:'https://www.walmart.com/browse/electronics',desc:'Budget-friendly'},
+      ],
+      'Computers':[
+        {name:'Apple',icon:'🍎',url:'https://www.apple.com/mac',desc:'Mac lineup',featured:true},
+        {name:'Dell',icon:'🖥️',url:'https://www.dell.com/en-us/shop/computers-and-laptops',desc:'Windows PCs & laptops'},
+        {name:'Lenovo',icon:'⌨️',url:'https://www.lenovo.com/us/en/laptops',desc:'ThinkPad & IdeaPad'},
+        {name:'Microsoft Store',icon:'🪟',url:'https://www.microsoft.com/en-us/store/b/laptops',desc:'Surface & Windows'},
+        {name:'HP',icon:'🖨️',url:'https://www.hp.com/us-en/shop/vwa/laptops',desc:'HP laptops & desktops'},
+        {name:'Best Buy Laptops',icon:'💼',url:'https://www.bestbuy.com/site/laptops',desc:'All brands in one place'},
+      ],
+      'Phones':[
+        {name:'Apple',icon:'📱',url:'https://www.apple.com/shop/buy-iphone',desc:'iPhone lineup',featured:true},
+        {name:'Samsung',icon:'📟',url:'https://www.samsung.com/us/smartphones',desc:'Galaxy phones'},
+        {name:'Best Buy Phones',icon:'📲',url:'https://www.bestbuy.com/site/mobile-phones',desc:'Unlocked & carrier'},
+        {name:'Swappa',icon:'♻️',url:'https://swappa.com',desc:'Used phones at great prices'},
+        {name:'Amazon Phones',icon:'📦',url:'https://www.amazon.com/s?k=unlocked+phones',desc:'Unlocked options'},
+        {name:'Google Store',icon:'🔍',url:'https://store.google.com',desc:'Pixel phones'},
+      ],
+      'Audio':[
+        {name:'Apple AirPods',icon:'🎧',url:'https://www.apple.com/shop/buy-airpods',desc:'AirPods lineup',featured:true},
+        {name:'Bose',icon:'🔊',url:'https://www.bose.com/headphones',desc:'Premium sound'},
+        {name:'Sony Audio',icon:'🎵',url:'https://electronics.sony.com/audio',desc:'Headphones & speakers'},
+        {name:'B&H Audio',icon:'🎤',url:'https://www.bhphotovideo.com/c/browse/Headphones/ci/11853',desc:'Pro audio gear'},
+        {name:'Amazon Audio',icon:'📦',url:'https://www.amazon.com/s?k=headphones',desc:'All budgets'},
+        {name:'Sweetwater',icon:'🎸',url:'https://www.sweetwater.com',desc:'Music & pro audio'},
+      ],
+      'Gaming':[
+        {name:'GameStop',icon:'🎮',url:'https://www.gamestop.com',desc:'Games & consoles',featured:true},
+        {name:'Steam',icon:'🕹️',url:'https://store.steampowered.com',desc:'PC gaming'},
+        {name:'Best Buy Gaming',icon:'👾',url:'https://www.bestbuy.com/site/video-games',desc:'Consoles & accessories'},
+        {name:'PlayStation',icon:'🔵',url:'https://direct.playstation.com',desc:'PS5 & games'},
+        {name:'Xbox',icon:'🟩',url:'https://www.xbox.com/en-US/shop',desc:'Xbox & Game Pass'},
+        {name:'Nintendo',icon:'🔴',url:'https://www.nintendo.com/store',desc:'Switch & Nintendo games'},
+      ],
+    },
+  },
+];
+
+function detectShoppingEvent(title){
+  const lower=title.toLowerCase();
+  // Check specific profiles first (most specific wins)
+  const priority=['grocery','backtoschool','clothes','home','tech'];
+  for(const pid of priority){
+    const profile=SHOPPING_PROFILES.find(p=>p.id===pid);
+    if(profile&&profile.keywords.some(k=>lower.includes(k)))return profile;
+  }
+  // Fall back to general shopping
+  const general=SHOPPING_PROFILES.find(p=>p.id==='general');
+  if(general&&general.keywords.some(k=>lower.includes(k)))return general;
+  return null;
+}
+
+let currentShopProfile=null;
+let currentShopTab=null;
+
+function openShopModal(profile, itemId){
+  currentShopProfile=profile;
+  document.getElementById('shop-modal-icon').textContent=profile.icon;
+  document.getElementById('shop-modal-title').textContent=profile.title;
+  document.getElementById('shop-modal-sub').textContent=profile.sub;
+
+  // Build tabs
+  const tabRow=document.getElementById('shop-tab-row');
+  tabRow.innerHTML=profile.tabs.map((t,i)=>`<button class="shop-tab${i===0?' active':''}" id="stab-${i}" onclick="switchShopTab(${i},'${t}')">${t}</button>`).join('');
+
+  // Build all panels
+  const panelsEl=document.getElementById('shop-panels');
+  panelsEl.innerHTML=profile.tabs.map((t,i)=>{
+    const sites=profile.panels[t]||[];
+    const cards=sites.map(s=>`<a class="shop-site-card${s.featured?' featured':''}" href="${s.url}" target="_blank" rel="noopener" onclick="trackShopClick('${s.name}')"><div class="shop-site-icon">${s.icon}</div><div class="shop-site-name">${s.name}</div><div class="shop-site-desc">${s.desc}</div></a>`).join('');
+    return`<div class="shop-panel${i===0?' active':''}" id="spanel-${i}"><div class="shop-section-title">${t}</div><div class="shop-site-grid">${cards}</div></div>`;
+  }).join('');
+
+  currentShopTab=0;
+  document.getElementById('shop-backdrop').classList.add('open');
+  listParentItemId=itemId; // track for "create a list" flow
+
+  // Mark item as having shopping attached
+  if(itemId){
+    const item=items.find(x=>x.id===itemId);
+    if(item){item.hasShopping=true;item.shopProfile=profile.id;save();render();}
+  }
+}
+
+function switchShopTab(idx,label){
+  document.querySelectorAll('.shop-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.shop-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  currentShopTab=idx;
+}
+
+function trackShopClick(storeName){
+  showToast('🛍️ Opening '+storeName+'…');
+}
+
+function closeShopModal(){
+  document.getElementById('shop-backdrop').classList.remove('open');
+}
+
+/* ─── DINING & TRAVEL SYSTEM ─── */
+const DT_OCCASIONS=[
+  {keywords:['anniversary dinner','anniversary lunch','anniversary brunch','anniversary date','anniversary outing','anniversary celebration'],icon:'💍',label:'Anniversary',color:'#9d174d',bg:'#fdf2f8',type:'anniversary'},
+  {keywords:['birthday dinner','birthday lunch','birthday brunch','birthday date','birthday celebration','birthday outing','birthday party dinner','bday dinner','bday lunch'],icon:'🎂',label:'Birthday dinner',color:'#7c3aed',bg:'#f5f3ff',type:'birthday'},
+  {keywords:['valentine','valentines dinner','valentines date','date night dinner','romantic dinner','anniversary date night'],icon:'❤️',label:'Date night',color:'#be123c',bg:'#fff1f2',type:'date night'},
+  {keywords:['graduation dinner','graduation lunch','graduation celebration'],icon:'🎓',label:'Graduation dinner',color:'#1d4ed8',bg:'#eff6ff',type:'graduation'},
+  {keywords:['mothers day dinner','mothers day brunch','fathers day dinner','fathers day lunch','family dinner','holiday dinner','christmas dinner','thanksgiving dinner'],icon:'🥂',label:'Special occasion',color:'#15803d',bg:'#f0fdf4',type:'special occasion'},
+  {keywords:['business lunch','business dinner','client dinner','client lunch','work dinner','team dinner','team lunch','networking dinner','networking lunch'],icon:'💼',label:'Business meal',color:'#374151',bg:'#f9fafb',type:'business'},
+  {keywords:['brunch','lunch date','dinner date','lunch out','dinner out','dining out','going out to eat','eat out','restaurant night','date dinner','going out for dinner','going out for lunch','dinner reservation','lunch reservation','brunch reservation'],icon:'🍽️',label:'Dining out',color:'#c2410c',bg:'#fff7ed',type:'dining'},
+];
+
+const RESTAURANT_SITES={
+  'Find a restaurant':[
+    {name:'OpenTable',icon:'🍽️',url:'https://www.opentable.com',desc:'Book reservations instantly',featured:true},
+    {name:'Yelp',icon:'⭐',url:'https://www.yelp.com/search?find_desc=restaurants',desc:'Reviews & ratings'},
+    {name:'Google Dining',icon:'🔍',url:'https://www.google.com/maps/search/restaurants',desc:'Nearby restaurants'},
+    {name:'Resy',icon:'🪑',url:'https://resy.com',desc:'Hottest reservations'},
+    {name:'Tock',icon:'🎟️',url:'https://exploretock.com',desc:'Unique dining experiences'},
+    {name:'Zagat',icon:'📖',url:'https://www.zagat.com',desc:'Curated reviews & guides'},
+  ],
+  'Delivery & takeout':[
+    {name:'DoorDash',icon:'🚪',url:'https://www.doordash.com',desc:'Fast delivery',featured:true},
+    {name:'Uber Eats',icon:'🛵',url:'https://www.ubereats.com',desc:'Wide restaurant selection'},
+    {name:'Grubhub',icon:'🥡',url:'https://www.grubhub.com',desc:'Local favorites'},
+    {name:'Seamless',icon:'🍜',url:'https://www.seamless.com',desc:'NYC & major cities'},
+    {name:'Instacart Meals',icon:'🛒',url:'https://www.instacart.com/store',desc:'Groceries + meal kits'},
+    {name:'Factor',icon:'🥘',url:'https://www.factormeals.com',desc:'Chef-made meal delivery'},
+  ],
+  'Cuisine inspiration':[
+    {name:'Eater',icon:'📰',url:'https://www.eater.com',desc:'Dining guides & hot spots',featured:true},
+    {name:'Infatuation',icon:'💬',url:'https://www.theinfatuation.com',desc:'Honest restaurant reviews'},
+    {name:'Michelin Guide',icon:'⭐',url:'https://guide.michelin.com/en/restaurants',desc:'Fine dining worldwide'},
+    {name:'TripAdvisor',icon:'🦉',url:'https://www.tripadvisor.com/Restaurants',desc:'Traveler-rated restaurants'},
+    {name:'Timeout',icon:'🕐',url:'https://www.timeout.com/restaurants',desc:'City-by-city dining'},
+    {name:'Tasting Table',icon:'🧑‍🍳',url:'https://www.tastingtable.com',desc:'Food & drink guides'},
+  ],
+};
+
+const TRAVEL_SITES={
+  'Flights':[
+    {name:'Google Flights',icon:'✈️',url:'https://www.google.com/flights',desc:'Best price search',featured:true},
+    {name:'Kayak',icon:'🛶',url:'https://www.kayak.com/flights',desc:'Compare all airlines'},
+    {name:'Expedia',icon:'🌐',url:'https://www.expedia.com/Flights-Search',desc:'Bundle & save'},
+    {name:'Scott\'s Cheap Flights',icon:'💸',url:'https://app.going.com',desc:'Fare deal alerts'},
+    {name:'Skyscanner',icon:'🔭',url:'https://www.skyscanner.com',desc:'Global flight search'},
+    {name:'Hopper',icon:'🐇',url:'https://www.hopper.com',desc:'Price prediction'},
+  ],
+  'Hotels & stays':[
+    {name:'Booking.com',icon:'🏨',url:'https://www.booking.com',desc:'Widest hotel selection',featured:true},
+    {name:'Airbnb',icon:'🏡',url:'https://www.airbnb.com',desc:'Unique homes & stays'},
+    {name:'Hotels.com',icon:'🛎️',url:'https://www.hotels.com',desc:'Free night rewards'},
+    {name:'VRBO',icon:'🏠',url:'https://www.vrbo.com',desc:'Vacation rentals'},
+    {name:'Marriott',icon:'🏩',url:'https://www.marriott.com',desc:'Premium hotels'},
+    {name:'Hilton',icon:'🛏️',url:'https://www.hilton.com',desc:'Points & rewards'},
+  ],
+  'Car rentals':[
+    {name:'Enterprise',icon:'🚗',url:'https://www.enterprise.com',desc:'Largest rental fleet',featured:true},
+    {name:'Hertz',icon:'🚙',url:'https://www.hertz.com',desc:'Premium vehicles'},
+    {name:'Turo',icon:'🔑',url:'https://turo.com',desc:'Rent someone\'s car'},
+    {name:'AutoSlash',icon:'✂️',url:'https://www.autoslash.com',desc:'Best rental prices'},
+    {name:'Costco Travel',icon:'🏭',url:'https://www.costcotravel.com',desc:'Member savings'},
+    {name:'Priceline',icon:'💰',url:'https://www.priceline.com/drive',desc:'Name your price'},
+  ],
+  'Full trip planning':[
+    {name:'Expedia',icon:'🌐',url:'https://www.expedia.com',desc:'All-in-one booking',featured:true},
+    {name:'TripAdvisor',icon:'🦉',url:'https://www.tripadvisor.com',desc:'Plan & book everything'},
+    {name:'Kayak',icon:'🗺️',url:'https://www.kayak.com',desc:'Compare everything'},
+    {name:'Wanderlog',icon:'📍',url:'https://wanderlog.com',desc:'Free trip planner'},
+    {name:'Google Travel',icon:'🔍',url:'https://www.google.com/travel',desc:'Smart trip planning'},
+    {name:'TripIt',icon:'📱',url:'https://www.tripit.com',desc:'Organize your itinerary'},
+  ],
+};
+
+const OCCASION_VIBES={
+  anniversary:['Romantic rooftop','Wine & fine dining','Waterfront view','Private dining room','Chef\'s tasting menu','Jazz & dinner'],
+  birthday:['Lively & fun','Sushi or omakase','Steakhouse','Brunch & bottomless mimosas','Hidden gem local spot','Interactive dining'],
+  'date night':['Candlelit & cozy','Trendy new opening','Wine bar','Italian trattoria','Farm-to-table','Rooftop lounge'],
+  graduation:['Group-friendly','Private event space','Upscale casual','Family-style feast','Cocktails & celebration','Outdoor patio'],
+  business:['Private booth','Quiet atmosphere','Power lunch spot','Hotel restaurant','Expense-friendly','Classic steakhouse'],
+  dining:['Local favorite','Outdoor seating','Late night options','Sunday brunch','Happy hour','BYOB'],
+  'special occasion':['Private dining','Chef\'s table','Wine pairing','Celebration cake','Special occasion menu','Stunning views'],
+};
+
+let dtPendingItemId=null;
+let dtOccasion=null;
+let dtChoices=new Set();
+
+function detectDiningEvent(title){
+  const lower=title.toLowerCase();
+  for(const occ of DT_OCCASIONS){
+    if(occ.keywords.some(k=>lower.includes(k)))return occ;
+  }
+  return null;
+}
+
+function openDTModal(itemId,occasion){
+  dtPendingItemId=itemId;
+  dtOccasion=occasion;
+  dtChoices=new Set();
+  // Reset choice cards
+  document.getElementById('dtc-restaurant').classList.remove('active-choice');
+  document.getElementById('dtc-travel').classList.remove('active-choice');
+  document.getElementById('dt-s1-err').style.display='none';
+  document.getElementById('dt-icon').textContent=occasion.icon;
+  document.getElementById('dt-title').textContent='Plan your '+occasion.type;
+  document.getElementById('dt-badge').textContent=occasion.icon+' '+occasion.label;
+  document.getElementById('dt-badge').style.cssText=`background:${occasion.bg};color:${occasion.color};border:1px solid ${occasion.color}40`;
+  document.getElementById('dt-rest-note').value='';
+  document.getElementById('dt-travel-note').value='';
+  document.getElementById('dt-rest-saved').classList.remove('show');
+  document.getElementById('dt-travel-saved').classList.remove('show');
+  buildRestaurantPanels();
+  buildTravelPanels();
+  dtShowStep('s1');
+  document.getElementById('dt-backdrop').classList.add('open');
+}
+
+function dtToggleChoice(choice){
+  const card=document.getElementById('dtc-'+choice);
+  if(dtChoices.has(choice)){dtChoices.delete(choice);card.classList.remove('active-choice');}
+  else{dtChoices.add(choice);card.classList.add('active-choice');}
+  document.getElementById('dt-s1-err').style.display='none';
+}
+
+function dtProceed(){
+  if(dtChoices.size===0){document.getElementById('dt-s1-err').style.display='block';return;}
+  if(dtChoices.has('restaurant')&&dtChoices.has('travel')){
+    dtShowStep('s-restaurant');
+    // Add "also plan travel" link
+    document.getElementById('dt-rest-also-travel').innerHTML=`<button class="ob-skip" onclick="dtShowStep('s-travel')">Also plan travel & stays →</button>`;
+  } else if(dtChoices.has('restaurant')){
+    document.getElementById('dt-rest-also-travel').innerHTML='';
+    dtShowStep('s-restaurant');
+  } else {
+    dtShowStep('s-travel');
+  }
+}
+
+function buildRestaurantPanels(){
+  const tabs=Object.keys(RESTAURANT_SITES);
+  const tabRow=document.getElementById('dt-rest-tabs');
+  tabRow.innerHTML=tabs.map((t,i)=>`<button class="dt-tab${i===0?' active':''}" id="dtrtab-${i}" onclick="switchDTTab('rest',${i})">${t}</button>`).join('');
+  const panelsEl=document.getElementById('dt-rest-panels');
+  panelsEl.innerHTML=tabs.map((t,i)=>{
+    const sites=RESTAURANT_SITES[t];
+    const cards=sites.map(s=>`<a class="dt-site-card${s.featured?' featured':''}" href="${s.url}" target="_blank" rel="noopener"><div class="dt-site-icon">${s.icon}</div><div class="dt-site-name">${s.name}</div><div class="dt-site-desc">${s.desc}</div></a>`).join('');
+    return`<div class="dt-step${i===0?' active':''}" id="dtrpanel-${i}" style="${i===0?'display:block':'display:none'}"><div class="dt-site-grid">${cards}</div></div>`;
+  }).join('');
+  // Vibe tags
+  const vibes=(OCCASION_VIBES[dtOccasion?.type]||OCCASION_VIBES.dining);
+  document.getElementById('dt-vibe-tags').innerHTML=vibes.map(v=>`<button style="font-size:12px;padding:5px 11px;border-radius:20px;border:1px solid #e8e5df;background:transparent;cursor:pointer;color:#555;font-family:'DM Sans',sans-serif;transition:all .15s" onmouseover="this.style.borderColor='#f97316';this.style.color='#c2410c'" onmouseout="this.style.borderColor='#e8e5df';this.style.color='#555'" onclick="window.open('https://www.google.com/maps/search/'+encodeURIComponent('${v} restaurant'),'_blank')">${v}</button>`).join('');
+}
+
+function buildTravelPanels(){
+  const tabs=Object.keys(TRAVEL_SITES);
+  const tabRow=document.getElementById('dt-travel-tabs');
+  tabRow.innerHTML=tabs.map((t,i)=>`<button class="dt-tab${i===0?' active':''}" id="dttpanel-${i}-btn" onclick="switchDTTab('travel',${i})">${t}</button>`).join('');
+  const panelsEl=document.getElementById('dt-travel-panels');
+  panelsEl.innerHTML=tabs.map((t,i)=>{
+    const sites=TRAVEL_SITES[t];
+    const cards=sites.map(s=>`<a class="dt-site-card${s.featured?' featured':''}" href="${s.url}" target="_blank" rel="noopener"><div class="dt-site-icon">${s.icon}</div><div class="dt-site-name">${s.name}</div><div class="dt-site-desc">${s.desc}</div></a>`).join('');
+    return`<div id="dttpanel-${i}" style="${i===0?'display:block':'display:none'}"><div class="dt-site-grid">${cards}</div></div>`;
+  }).join('');
+}
+
+function switchDTTab(type,idx){
+  if(type==='rest'){
+    document.querySelectorAll('[id^="dtrtab-"]').forEach((t,i)=>t.classList.toggle('active',i===idx));
+    document.querySelectorAll('[id^="dtrpanel-"]').forEach((p,i)=>p.style.display=i===idx?'block':'none');
+  } else {
+    document.querySelectorAll('[id^="dttpanel-"][id$="-btn"]').forEach((t,i)=>t.classList.toggle('active',i===idx));
+    document.querySelectorAll('[id^="dttpanel-"]:not([id$="-btn"])').forEach((p,i)=>p.style.display=i===idx?'block':'none');
+  }
+}
+
+function dtShowStep(step){
+  document.querySelectorAll('.dt-step').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('dt-s-'+step.replace('s-',''));
+  if(el)el.classList.add('active');
+}
+
+function dtSaveRestNote(){
+  const note=document.getElementById('dt-rest-note').value.trim();
+  const item=items.find(x=>x.id===dtPendingItemId);
+  if(item){
+    if(note)item.restaurantNote=note;
+    item.hasDining=true;
+    save();render();
+  }
+  document.getElementById('dt-rest-saved').classList.add('show');
+  if(dtChoices.has('travel')){
+    setTimeout(()=>dtShowStep('s-travel'),1200);
+  } else {
+    setTimeout(()=>{dtShowStep('s-done');setTimeout(closeDTModal,1400);},1200);
+  }
+}
+
+function dtSaveTravelNote(){
+  const note=document.getElementById('dt-travel-note').value.trim();
+  const item=items.find(x=>x.id===dtPendingItemId);
+  if(item){
+    if(note)item.travelNote=note;
+    item.hasTravel=true;
+    save();render();
+  }
+  document.getElementById('dt-travel-saved').classList.add('show');
+  setTimeout(()=>{dtShowStep('s-done');setTimeout(closeDTModal,1400);},1200);
+}
+
+function reopenDTModal(id){
+  const item=items.find(x=>x.id===id);
+  if(!item)return;
+  const occ=DT_OCCASIONS.find(o=>o.type===item.diningOccasion)||DT_OCCASIONS[DT_OCCASIONS.length-1];
+  dtChoices=new Set();
+  if(item.hasDining)dtChoices.add('restaurant');
+  if(item.hasTravel)dtChoices.add('travel');
+  openDTModal(id,occ);
+  // Go straight to the relevant section
+  if(item.hasDining&&!item.hasTravel)setTimeout(()=>dtShowStep('s-restaurant'),100);
+  else if(item.hasTravel&&!item.hasDining)setTimeout(()=>dtShowStep('s-travel'),100);
+}
+
+function closeDTModal(){
+  document.getElementById('dt-backdrop').classList.remove('open');
+  dtPendingItemId=null;
+}
+
+/* ─── WORK EVENT SYSTEM ─── */
+const WORK_EVENTS=[
+  {keywords:['conference','conf ','summit','symposium','convention','expo ','tradeshow','trade show','trade-show'],icon:'🏛️',label:'Conference',type:'conference'},
+  {keywords:['offsite','off-site','off site','team offsite','company offsite','retreat','company retreat','team retreat'],icon:'🏕️',label:'Work offsite',type:'offsite'},
+  {keywords:['work trip','business trip','travel for work','work travel','corporate travel','business travel'],icon:'💼',label:'Business trip',type:'work trip'},
+  {keywords:['client meeting','client dinner','client lunch','client visit','client site','client trip'],icon:'🤝',label:'Client meeting',type:'client'},
+  {keywords:['team dinner','team lunch','team outing','team event','team building','team-building'],icon:'👥',label:'Team event',type:'team'},
+  {keywords:['webinar','online conference','virtual conference','virtual summit','online summit'],icon:'💻',label:'Webinar / virtual event',type:'webinar'},
+  {keywords:['guest speaker','keynote','speaking engagement','speaking at','presenting at','give a talk','giving a talk','panel discussion'],icon:'🎤',label:'Speaking engagement',type:'speaking'},
+  {keywords:['work event','corporate event','company event','annual meeting','all hands','all-hands','town hall','townhall'],icon:'🏢',label:'Work event',type:'work event'},
+  {keywords:['training','workshop','professional development','certification course','bootcamp','boot camp'],icon:'📚',label:'Training / workshop',type:'training'},
+];
+
+const WK_FLIGHT_SITES={
+  'Search & compare':[
+    {name:'Google Flights',icon:'✈️',url:'https://www.google.com/flights',desc:'Best price finder',featured:true},
+    {name:'Kayak',icon:'🔍',url:'https://www.kayak.com/flights',desc:'Compare all airlines'},
+    {name:'Expedia',icon:'🌐',url:'https://www.expedia.com/Flights-Search',desc:'Bundle & save'},
+    {name:'Skyscanner',icon:'🔭',url:'https://www.skyscanner.com',desc:'Global search'},
+    {name:'Hopper',icon:'🐇',url:'https://www.hopper.com',desc:'Price prediction'},
+    {name:'Scott\'s Cheap Flights',icon:'💸',url:'https://app.going.com',desc:'Fare deal alerts'},
+  ],
+  'Book direct':[
+    {name:'Delta',icon:'🔺',url:'https://www.delta.com',desc:'SkyMiles points'},
+    {name:'United',icon:'🔵',url:'https://www.united.com',desc:'MileagePlus points'},
+    {name:'American',icon:'🦅',url:'https://www.aa.com',desc:'AAdvantage miles'},
+    {name:'Southwest',icon:'💛',url:'https://www.southwest.com',desc:'No change fees'},
+    {name:'JetBlue',icon:'💙',url:'https://www.jetblue.com',desc:'TrueBlue rewards'},
+    {name:'Alaska Airlines',icon:'🏔️',url:'https://www.alaskaair.com',desc:'Mileage Plan'},
+  ],
+  'Corporate booking':[
+    {name:'Concur Travel',icon:'🏢',url:'https://www.concur.com',desc:'SAP expense integration',featured:true},
+    {name:'TripActions',icon:'⚡',url:'https://www.navan.com',desc:'Corporate travel mgmt'},
+    {name:'Egencia',icon:'📊',url:'https://www.egencia.com',desc:'Amex GBT platform'},
+    {name:'TravelPerk',icon:'🗺️',url:'https://www.travelperk.com',desc:'All-in-one corp travel'},
+  ],
+};
+
+const WK_HOTEL_SITES={
+  'Search & compare':[
+    {name:'Booking.com',icon:'🏨',url:'https://www.booking.com',desc:'Widest selection',featured:true},
+    {name:'Expedia Hotels',icon:'🌐',url:'https://www.expedia.com/Hotels',desc:'Bundle deals'},
+    {name:'Hotels.com',icon:'🛎️',url:'https://www.hotels.com',desc:'Free night rewards'},
+    {name:'Priceline',icon:'💰',url:'https://www.priceline.com/hotels',desc:'Express deals'},
+    {name:'HotelTonight',icon:'🌙',url:'https://www.hoteltonight.com',desc:'Last-minute rates'},
+    {name:'Airbnb for Work',icon:'🏡',url:'https://www.airbnb.com/work',desc:'Extended stays'},
+  ],
+  'Hotel chains':[
+    {name:'Marriott',icon:'🏩',url:'https://www.marriott.com',desc:'Bonvoy points',featured:true},
+    {name:'Hilton',icon:'🛏️',url:'https://www.hilton.com',desc:'Honors rewards'},
+    {name:'Hyatt',icon:'🌿',url:'https://www.hyatt.com',desc:'World of Hyatt'},
+    {name:'IHG',icon:'🏬',url:'https://www.ihg.com',desc:'One Rewards'},
+    {name:'Wyndham',icon:'🏰',url:'https://www.wyndhamhotels.com',desc:'Rewards program'},
+    {name:'Radisson',icon:'⭐',url:'https://www.radissonhotels.com',desc:'Rewards Plus'},
+  ],
+};
+
+const WK_DINNER_SITES={
+  'Reserve a table':[
+    {name:'OpenTable',icon:'🍽️',url:'https://www.opentable.com',desc:'Instant reservations',featured:true},
+    {name:'Resy',icon:'🪑',url:'https://resy.com',desc:'Hot spot bookings'},
+    {name:'Yelp',icon:'⭐',url:'https://www.yelp.com/search?find_desc=restaurants',desc:'Reviews & ratings'},
+    {name:'Google Dining',icon:'🔍',url:'https://www.google.com/maps/search/restaurants',desc:'Nearby restaurants'},
+    {name:'Tock',icon:'🎟️',url:'https://exploretock.com',desc:'Unique experiences'},
+    {name:'SevenRooms',icon:'🗝️',url:'https://sevenrooms.com',desc:'VIP reservations'},
+  ],
+  'Business dining guides':[
+    {name:'Eater',icon:'📰',url:'https://www.eater.com',desc:'Best dining guides',featured:true},
+    {name:'Zagat',icon:'📖',url:'https://www.zagat.com',desc:'Curated city guides'},
+    {name:'Michelin Guide',icon:'⭐',url:'https://guide.michelin.com/en/restaurants',desc:'Fine dining picks'},
+    {name:'Infatuation',icon:'💬',url:'https://www.theinfatuation.com',desc:'Honest reviews'},
+    {name:'Timeout',icon:'🕐',url:'https://www.timeout.com/restaurants',desc:'City best lists'},
+    {name:'Gayot',icon:'🏆',url:'https://www.gayot.com',desc:'Fine dining ratings'},
+  ],
+};
+
+const WK_CAR_SITES=[
+  {name:'Enterprise',icon:'🚗',url:'https://www.enterprise.com',desc:'Largest fleet',featured:true},
+  {name:'Hertz',icon:'🚙',url:'https://www.hertz.com',desc:'Premium vehicles'},
+  {name:'National Car',icon:'🏁',url:'https://www.nationalcar.com',desc:'Emerald Club perks'},
+  {name:'Avis',icon:'🔑',url:'https://www.avis.com',desc:'Preferred member savings'},
+  {name:'Budget',icon:'💰',url:'https://www.budget.com',desc:'Best value rentals'},
+  {name:'Turo',icon:'🔐',url:'https://turo.com',desc:'Unique peer rentals'},
+];
+
+const WK_TRANSPORT_SITES=[
+  {name:'Uber',icon:'⚫',url:'https://www.uber.com',desc:'On-demand rides',featured:true},
+  {name:'Lyft',icon:'🟣',url:'https://www.lyft.com',desc:'Reliable rideshare'},
+  {name:'Uber for Business',icon:'💼',url:'https://www.uber.com/us/en/business/',desc:'Corporate billing'},
+  {name:'Blacklane',icon:'🖤',url:'https://www.blacklane.com',desc:'Executive chauffeur'},
+  {name:'SuperShuttle',icon:'🚌',url:'https://www.supershuttle.com',desc:'Airport shuttles'},
+  {name:'Rome2Rio',icon:'🗺️',url:'https://www.rome2rio.com',desc:'All transport options'},
+];
+
+const WK_EXPENSE_SITES=[
+  {name:'Concur',icon:'📊',url:'https://www.concur.com',desc:'Enterprise expenses',featured:true},
+  {name:'Expensify',icon:'🧾',url:'https://www.expensify.com',desc:'Smart receipt scanning'},
+  {name:'Navan',icon:'⚡',url:'https://www.navan.com',desc:'Travel + expense'},
+  {name:'Brex',icon:'💳',url:'https://www.brex.com',desc:'Corporate card'},
+  {name:'Ramp',icon:'🚀',url:'https://ramp.com',desc:'Automated expense mgmt'},
+  {name:'Zoho Expense',icon:'📱',url:'https://www.zoho.com/expense',desc:'Affordable & easy'},
+];
+
+let wkPendingItemId=null;
+let wkEventMeta=null;
+let wkSelected=new Set();
+let wkQueue=[];
+let wkQueueIndex=0;
+let wkNotesSaved={};
+
+function detectWorkEvent(title){
+  const lower=title.toLowerCase();
+  for(const ev of WORK_EVENTS){
+    if(ev.keywords.some(k=>lower.includes(k)))return ev;
+  }
+  return null;
+}
+
+function openWKModal(itemId,eventMeta){
+  wkPendingItemId=itemId;
+  wkEventMeta=eventMeta;
+  wkSelected=new Set();
+  wkNotesSaved={};
+  wkQueue=[];
+  wkQueueIndex=0;
+  // Reset checklist UI
+  ['flight','hotel','car','dinner','transport','expense'].forEach(k=>{
+    document.getElementById('wkc-'+k).classList.remove('selected');
+  });
+  document.getElementById('wk-s1-err').style.display='none';
+  document.getElementById('wk-icon').textContent=eventMeta.icon;
+  document.getElementById('wk-title').textContent='Plan: '+eventMeta.label;
+  document.getElementById('wk-badge').textContent=eventMeta.icon+' '+eventMeta.label;
+  // Pre-build grids/panels
+  buildWKCarGrid();
+  buildWKTransportGrid();
+  buildWKExpenseGrid();
+  buildWKFlightPanels();
+  buildWKHotelPanels();
+  buildWKDinnerPanels();
+  // Reset notes
+  ['flight','hotel','car','dinner','transport','expense'].forEach(k=>{
+    const n=document.getElementById('wk-'+k+'-note');
+    const s=document.getElementById('wk-'+k+'-saved');
+    if(n)n.value='';
+    if(s)s.classList.remove('show');
+  });
+  wkShowStep('s1');
+  document.getElementById('wk-backdrop').classList.add('open');
+}
+
+function wkToggle(key){
+  const row=document.getElementById('wkc-'+key);
+  if(wkSelected.has(key)){wkSelected.delete(key);row.classList.remove('selected');}
+  else{wkSelected.add(key);row.classList.add('selected');}
+  document.getElementById('wk-s1-err').style.display='none';
+}
+
+function wkProceed(){
+  if(wkSelected.size===0){document.getElementById('wk-s1-err').style.display='block';return;}
+  // Build queue in logical order
+  const order=['flight','hotel','car','dinner','transport','expense'];
+  wkQueue=order.filter(k=>wkSelected.has(k));
+  wkQueueIndex=0;
+  wkShowStep('s-'+wkQueue[0]);
+}
+
+function wkBack(){
+  if(wkQueueIndex===0){wkShowStep('s1');}
+  else{wkQueueIndex--;wkShowStep('s-'+wkQueue[wkQueueIndex]);}
+}
+
+function wkSaveNote(type){
+  const noteEl=document.getElementById('wk-'+type+'-note');
+  const savedEl=document.getElementById('wk-'+type+'-saved');
+  const note=noteEl?noteEl.value.trim():'';
+  const item=items.find(x=>x.id===wkPendingItemId);
+  if(item){
+    if(!item.workNotes)item.workNotes={};
+    if(note)item.workNotes[type]=note;
+    item.hasWork=true;
+    item.workTypes=Array.from(wkSelected);
+    item.workEvent=wkEventMeta.type;
+    wkNotesSaved[type]=true;
+    save();render();
+  }
+  if(savedEl)savedEl.classList.add('show');
+  setTimeout(()=>{
+    wkQueueIndex++;
+    if(wkQueueIndex<wkQueue.length){
+      wkShowStep('s-'+wkQueue[wkQueueIndex]);
+    } else {
+      // Build done summary
+      const saved=Object.keys(wkNotesSaved);
+      const icons={flight:'✈️',hotel:'🏨',car:'🚗',dinner:'🍽️',transport:'🚕',expense:'🧾'};
+      const labels={flight:'Flight',hotel:'Hotel',car:'Car rental',dinner:'Dinner',transport:'Transport',expense:'Expenses'};
+      const summary=saved.map(k=>icons[k]+' '+labels[k]).join(' · ');
+      document.getElementById('wk-done-summary').textContent=summary+' — all planned!';
+      wkShowStep('s-done');
+      setTimeout(closeWKModal,1800);
+    }
+  },900);
+}
+
+function wkShowStep(step){
+  document.querySelectorAll('.wk-step').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('wk-'+step.replace('wk-',''));
+  if(el)el.classList.add('active');
+}
+
+function buildWKFlightPanels(){
+  const tabs=Object.keys(WK_FLIGHT_SITES);
+  document.getElementById('wk-flight-tabs').innerHTML=tabs.map((t,i)=>`<button class="wk-tab${i===0?' active':''}" onclick="switchWKTab('flight',${i},this)">${t}</button>`).join('');
+  document.getElementById('wk-flight-panels').innerHTML=tabs.map((t,i)=>`<div id="wkfp-${i}" style="${i===0?'display:block':'display:none'}"><div class="wk-site-grid">${WK_FLIGHT_SITES[t].map(s=>`<a class="wk-site-card${s.featured?' featured':''}" href="${s.url}" target="_blank" rel="noopener"><div class="wk-site-icon">${s.icon}</div><div class="wk-site-name">${s.name}</div><div class="wk-site-desc">${s.desc}</div></a>`).join('')}</div></div>`).join('');
+}
+
+function buildWKHotelPanels(){
+  const tabs=Object.keys(WK_HOTEL_SITES);
+  document.getElementById('wk-hotel-tabs').innerHTML=tabs.map((t,i)=>`<button class="wk-tab${i===0?' active':''}" onclick="switchWKTab('hotel',${i},this)">${t}</button>`).join('');
+  document.getElementById('wk-hotel-panels').innerHTML=tabs.map((t,i)=>`<div id="wkhp-${i}" style="${i===0?'display:block':'display:none'}"><div class="wk-site-grid">${WK_HOTEL_SITES[t].map(s=>`<a class="wk-site-card${s.featured?' featured':''}" href="${s.url}" target="_blank" rel="noopener"><div class="wk-site-icon">${s.icon}</div><div class="wk-site-name">${s.name}</div><div class="wk-site-desc">${s.desc}</div></a>`).join('')}</div></div>`).join('');
+}
+
+function buildWKDinnerPanels(){
+  const tabs=Object.keys(WK_DINNER_SITES);
+  document.getElementById('wk-dinner-tabs').innerHTML=tabs.map((t,i)=>`<button class="wk-tab${i===0?' active':''}" onclick="switchWKTab('dinner',${i},this)">${t}</button>`).join('');
+  document.getElementById('wk-dinner-panels').innerHTML=tabs.map((t,i)=>`<div id="wkdp-${i}" style="${i===0?'display:block':'display:none'}"><div class="wk-site-grid">${WK_DINNER_SITES[t].map(s=>`<a class="wk-site-card${s.featured?' featured':''}" href="${s.url}" target="_blank" rel="noopener"><div class="wk-site-icon">${s.icon}</div><div class="wk-site-name">${s.name}</div><div class="wk-site-desc">${s.desc}</div></a>`).join('')}</div></div>`).join('');
+}
+
+function buildWKCarGrid(){
+  document.getElementById('wk-car-grid').innerHTML=WK_CAR_SITES.map(s=>`<a class="wk-site-card${s.featured?' featured':''}" href="${s.url}" target="_blank" rel="noopener"><div class="wk-site-icon">${s.icon}</div><div class="wk-site-name">${s.name}</div><div class="wk-site-desc">${s.desc}</div></a>`).join('');
+}
+
+function buildWKTransportGrid(){
+  document.getElementById('wk-transport-grid').innerHTML=WK_TRANSPORT_SITES.map(s=>`<a class="wk-site-card${s.featured?' featured':''}" href="${s.url}" target="_blank" rel="noopener"><div class="wk-site-icon">${s.icon}</div><div class="wk-site-name">${s.name}</div><div class="wk-site-desc">${s.desc}</div></a>`).join('');
+}
+
+function buildWKExpenseGrid(){
+  document.getElementById('wk-expense-grid').innerHTML=WK_EXPENSE_SITES.map(s=>`<a class="wk-site-card${s.featured?' featured':''}" href="${s.url}" target="_blank" rel="noopener"><div class="wk-site-icon">${s.icon}</div><div class="wk-site-name">${s.name}</div><div class="wk-site-desc">${s.desc}</div></a>`).join('');
+}
+
+function switchWKTab(type,idx,btn){
+  const prefixes={flight:'wkfp',hotel:'wkhp',dinner:'wkdp'};
+  const pfx=prefixes[type];
+  if(!pfx)return;
+  btn.closest('.wk-tabs').querySelectorAll('.wk-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  const panels=btn.closest('.wk-step').querySelectorAll('[id^="'+pfx+'-"]');
+  panels.forEach((p,i)=>p.style.display=i===idx?'block':'none');
+}
+
+function reopenWKModal(id){
+  const item=items.find(x=>x.id===id);
+  if(!item)return;
+  const ev=WORK_EVENTS.find(e=>e.type===item.workEvent)||WORK_EVENTS[7];
+  openWKModal(id,ev);
+  // Pre-select previously chosen types
+  if(item.workTypes){
+    item.workTypes.forEach(k=>{
+      wkSelected.add(k);
+      const row=document.getElementById('wkc-'+k);
+      if(row)row.classList.add('selected');
+    });
+  }
+}
+
+function closeWKModal(){
+  document.getElementById('wk-backdrop').classList.remove('open');
+  wkPendingItemId=null;
+}
+
+/* ─── LIST BUILDER SYSTEM ─── */
+const LIST_TEMPLATES=[
+  {
+    id:'grocery',icon:'🛒',name:'Weekly groceries',
+    sections:{
+      'Produce':['Bananas','Apples','Spinach','Broccoli','Carrots','Tomatoes','Avocados','Lemons'],
+      'Dairy & Eggs':['Milk','Eggs','Butter','Greek yogurt','Cheddar cheese','Cream cheese'],
+      'Meat & Seafood':['Chicken breast','Ground beef','Salmon','Bacon'],
+      'Pantry':['Bread','Pasta','Rice','Olive oil','Canned tomatoes','Peanut butter','Coffee'],
+      'Snacks':['Chips','Granola bars','Nuts','Crackers'],
+      'Frozen':['Frozen veggies','Ice cream','Frozen pizza'],
+      'Beverages':['Orange juice','Sparkling water','Wine'],
+    }
+  },
+  {
+    id:'produce',icon:'🥦',name:'Produce only',
+    sections:{
+      'Vegetables':['Broccoli','Spinach','Kale','Bell peppers','Zucchini','Mushrooms','Onions','Garlic','Sweet potatoes','Brussels sprouts'],
+      'Fruit':['Strawberries','Blueberries','Bananas','Apples','Grapes','Oranges','Mango','Pineapple'],
+      'Herbs':['Basil','Cilantro','Parsley','Rosemary'],
+    }
+  },
+  {
+    id:'backtoschool',icon:'🎒',name:'Back to school',
+    sections:{
+      'Writing':['Pencils (pack)','Pens (blue & black)','Highlighters','Markers','Colored pencils','Erasers','Pencil sharpener'],
+      'Paper & Notebooks':['Spiral notebooks (5)','Composition books','Loose leaf paper','Index cards','Sticky notes'],
+      'Binders & Folders':['3-ring binders','Pocket folders','Dividers','Sheet protectors'],
+      'Tech':['USB flash drive','Calculator','Headphones','Phone charger'],
+      'Backpack & Gear':['Backpack','Lunch box','Water bottle','Pencil case'],
+      'Miscellaneous':['Scissors','Glue sticks','Tape','Ruler','Stapler','Paper clips'],
+    }
+  },
+  {
+    id:'household',icon:'🏠',name:'Household essentials',
+    sections:{
+      'Cleaning':['All-purpose cleaner','Dish soap','Laundry detergent','Sponges','Paper towels','Trash bags','Mop refills','Toilet bowl cleaner'],
+      'Bathroom':['Toilet paper','Shampoo','Conditioner','Body wash','Toothpaste','Floss','Razors','Cotton swabs'],
+      'Kitchen':['Aluminum foil','Plastic wrap','Ziplock bags','Dish towels','Coffee filters'],
+      'Bedroom & Laundry':['Dryer sheets','Fabric softener','Hangers','Air freshener'],
+    }
+  },
+  {
+    id:'party',icon:'🎉',name:'Party supplies',
+    sections:{
+      'Decorations':['Balloons','Streamers','Banners','Table covers','Centerpieces','Confetti'],
+      'Tableware':['Paper plates','Napkins','Plastic cups','Plastic utensils','Serving platters'],
+      'Food & Drinks':['Cake or dessert','Chips & dips','Beverages','Ice','Mixers'],
+      'Extras':['Birthday candles','Matches','Trash bags','Ziplock bags for leftovers'],
+    }
+  },
+  {
+    id:'baby',icon:'🍼',name:'Baby essentials',
+    sections:{
+      'Feeding':['Formula or nursing supplies','Baby food pouches','Bottles','Sippy cups','Bibs','Burp cloths'],
+      'Diapering':['Diapers','Wipes','Diaper cream','Changing pad covers'],
+      'Bath & Skin':['Baby shampoo','Baby lotion','Baby wash','Nail clippers'],
+      'Health':['Baby thermometer','Infant pain reliever','Nasal aspirator','Gas drops'],
+      'Clothing':['Onesies','Socks','Sleep sacks','Mittens'],
+    }
+  },
+  {
+    id:'custom',icon:'✏️',name:'Start from scratch',
+    sections:{'My list':[]},
+  },
+];
+
+let currentListTemplate=null;
+let listItems=[];// {id, text, checked, section}
+let listParentItemId=null;
+let listNextId=1;
+
+function shopToList(){
+  closeShopModal();
+  setTimeout(()=>openListModal(listParentItemId),300);
+}
+
+function openListModal(parentItemId){
+  listParentItemId=parentItemId;
+  // If item already has a saved list, go straight to builder
+  const parent=items.find(x=>x.id===parentItemId);
+  if(parent&&parent.savedList&&parent.savedList.length>0){
+    listItems=JSON.parse(JSON.stringify(parent.savedList));
+    const tmpl=LIST_TEMPLATES.find(t=>t.id===parent.listTemplateId)||LIST_TEMPLATES[0];
+    currentListTemplate=tmpl;
+    showListBuilder(tmpl);
+  } else {
+    buildTemplateGrid();
+    document.getElementById('list-step-template').style.display='block';
+    document.getElementById('list-step-builder').style.display='none';
+  }
+  document.getElementById('list-backdrop').classList.add('open');
+}
+
+function buildTemplateGrid(){
+  const grid=document.getElementById('list-template-grid');
+  // Determine relevant templates based on parent item context
+  const parent=items.find(x=>x.id===listParentItemId);
+  let relevantIds=['grocery','produce','backtoschool','household','party','baby','custom'];
+  if(parent){
+    const lower=parent.title.toLowerCase();
+    if(lower.includes('grocery')||lower.includes('food'))relevantIds=['grocery','produce','household','party','baby','custom'];
+    else if(lower.includes('back to school')||lower.includes('school'))relevantIds=['backtoschool','household','custom'];
+    else if(lower.includes('baby')||lower.includes('shower'))relevantIds=['baby','grocery','party','custom'];
+    else if(lower.includes('party')||lower.includes('birthday'))relevantIds=['party','grocery','custom'];
+  }
+  const shown=LIST_TEMPLATES.filter(t=>relevantIds.includes(t.id));
+  let selected=shown[0];
+  currentListTemplate=selected;
+  grid.innerHTML=shown.map(t=>{
+    const totalItems=Object.values(t.sections).flat().length;
+    return`<div class="list-template-card${t.id===selected.id?' selected':''}" id="ltc-${t.id}" onclick="selectTemplate('${t.id}')">
+      <div class="lt-icon">${t.icon}</div>
+      <div class="lt-name">${t.name}</div>
+      <div class="lt-count">${totalItems>0?totalItems+' suggested items':'Blank list'}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectTemplate(id){
+  currentListTemplate=LIST_TEMPLATES.find(t=>t.id===id);
+  document.querySelectorAll('.list-template-card').forEach(c=>c.classList.remove('selected'));
+  const el=document.getElementById('ltc-'+id);
+  if(el)el.classList.add('selected');
+}
+
+function useTemplate(){
+  if(!currentListTemplate)return;
+  // Build list items from template — all unchecked
+  listItems=[];
+  listNextId=1;
+  Object.entries(currentListTemplate.sections).forEach(([section,itemNames])=>{
+    itemNames.forEach(name=>{
+      listItems.push({id:listNextId++,text:name,checked:false,section});
+    });
+  });
+  showListBuilder(currentListTemplate);
+}
+
+function showListBuilder(tmpl){
+  document.getElementById('list-step-template').style.display='none';
+  document.getElementById('list-step-builder').style.display='block';
+  document.getElementById('list-builder-icon').textContent=tmpl.icon;
+  const parent=items.find(x=>x.id===listParentItemId);
+  document.getElementById('list-builder-title').textContent=parent?parent.title:'My list';
+  document.getElementById('list-builder-sub').textContent=tmpl.name+(tmpl.id!=='custom'?' template — uncheck what you don\'t need, add what\'s missing':'— add your items below');
+  document.getElementById('list-new-item').value='';
+  renderListItems();
+}
+
+function renderListItems(){
+  const container=document.getElementById('list-items-container');
+  const sections=[...new Set(listItems.map(i=>i.section))];
+  const multiSection=sections.length>1||(sections[0]&&sections[0]!=='My list');
+  const total=listItems.length;
+  const checked=listItems.filter(i=>i.checked).length;
+  const pct=total>0?Math.round((checked/total)*100):0;
+  document.getElementById('list-progress-bar').style.width=pct+'%';
+  document.getElementById('list-checked-count').textContent=checked+' of '+total+' items';
+  document.getElementById('list-pct').textContent=pct+'%';
+  const clearBtn=document.getElementById('clear-checked-btn');
+  if(clearBtn)clearBtn.style.display=checked>0?'inline-block':'none';
+
+  let html='';
+  sections.forEach(section=>{
+    const sectionItems=listItems.filter(i=>i.section===section);
+    if(multiSection&&section&&section!=='My list'){
+      html+=`<div class="list-section-header">${section}</div>`;
+    }
+    sectionItems.forEach(item=>{
+      html+=`<div class="list-item-row" id="lir-${item.id}">
+        <div class="list-check${item.checked?' checked':''}" onclick="toggleListItem(${item.id})"></div>
+        <input class="list-item-text${item.checked?' done-text':''}" value="${item.text.replace(/"/g,'&quot;')}" onchange="updateListItem(${item.id},this.value)" onkeydown="if(event.key==='Enter')document.getElementById('list-new-item').focus()">
+        <button class="list-remove" onclick="removeListItem(${item.id})">×</button>
+      </div>`;
+    });
+  });
+  container.innerHTML=html;
+}
+
+function toggleListItem(id){
+  const item=listItems.find(i=>i.id===id);
+  if(item)item.checked=!item.checked;
+  renderListItems();
+}
+function updateListItem(id,val){
+  const item=listItems.find(i=>i.id===id);
+  if(item)item.text=val;
+}
+function removeListItem(id){
+  listItems=listItems.filter(i=>i.id!==id);
+  renderListItems();
+}
+function clearChecked(){
+  listItems=listItems.filter(i=>!i.checked);
+  renderListItems();
+}
+function addListItem(){
+  const input=document.getElementById('list-new-item');
+  const text=input.value.trim();
+  if(!text)return;
+  // Determine which section to add to — use last section or 'My list'
+  const sections=[...new Set(listItems.map(i=>i.section))];
+  const lastSection=sections[sections.length-1]||'My list';
+  listItems.push({id:listNextId++,text,checked:false,section:lastSection});
+  input.value='';
+  renderListItems();
+  // Keep focus in input for rapid entry
+  setTimeout(()=>input.focus(),50);
+}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('list-backdrop').classList.contains('open')){
+    const input=document.getElementById('list-new-item');
+    if(e.key==='Enter'&&document.activeElement===input)addListItem();
+  }
+});
+
+function saveListToItem(){
+  const parent=items.find(x=>x.id===listParentItemId);
+  if(parent){
+    parent.savedList=JSON.parse(JSON.stringify(listItems));
+    parent.listTemplateId=currentListTemplate?currentListTemplate.id:null;
+    parent.hasList=true;
+    save();render();
+  }
+  closeListModal();
+  const total=listItems.length;
+  const unchecked=listItems.filter(i=>!i.checked).length;
+  showToast('📋 List saved! '+unchecked+' item'+(unchecked!==1?'s':'')+' to get');
+}
+
+function listStepBack(){
+  document.getElementById('list-step-builder').style.display='none';
+  document.getElementById('list-step-template').style.display='block';
+  buildTemplateGrid();
+}
+
+function openSavedList(id){
+  openListModal(id);
+}
+
+function closeListModal(){
+  document.getElementById('list-backdrop').classList.remove('open');
+}
+
+function addItem(){
+  const title=document.getElementById('new-title').value.trim();
+  if(!title)return;
+  const newItem={id:'i'+(nextId++),title,cat:document.getElementById('new-cat').value,due:document.getElementById('new-date').value||null,priority:document.getElementById('new-pri').value,done:false,rainCheck:false,rainNote:null,rainDate:null,hasGift:false,registryUrl:null,giftEvent:null,hasShopping:false,shopProfile:null,hasList:false,savedList:null,listTemplateId:null,hasDining:false,hasTravel:false,restaurantNote:null,travelNote:null,diningOccasion:null,hasWork:false,workTypes:null,workNotes:null,workEvent:null};
+  items.unshift(newItem);
+  document.getElementById('new-title').value='';
+  document.getElementById('new-date').value='';
+  save();render();
+  // Detection priority: shopping → work event → dining/travel → gift
+  const shopProfile=detectShoppingEvent(title);
+  const workEvent=detectWorkEvent(title);
+  const diningEvent=detectDiningEvent(title);
+  const eventMeta=detectGiftEvent(title);
+  if(shopProfile){
+    setTimeout(()=>openShopModal(shopProfile,newItem.id),350);
+  } else if(workEvent){
+    newItem.workEvent=workEvent.type;
+    save();
+    setTimeout(()=>openWKModal(newItem.id,workEvent),350);
+  } else if(diningEvent){
+    newItem.diningOccasion=diningEvent.type;
+    save();
+    setTimeout(()=>openDTModal(newItem.id,diningEvent),350);
+  } else if(eventMeta){
+    setTimeout(()=>openGiftModal(newItem.id,eventMeta),350);
+  } else {
+    showToast('✓ Added to Obliga');
+  }
+}
+document.getElementById('new-title').addEventListener('keydown',e=>{if(e.key==='Enter')addItem()});
+
+function toggle(id){
+  const item=items.find(x=>x.id===id);
+  if(!item)return;
+  item.done=!item.done;
+  if(item.done){
+    item.rainCheck=false;
+    completedToday++;
+    totalCompleted++;
+    localStorage.setItem('obliga-completed-today',completedToday);
+    localStorage.setItem('obliga-total-completed',totalCompleted);
+    updateStreak();
+    // Pillar 1 & 3: win moment toast
+    const msgs=['✅ Done! One less thing to worry about.','✅ Knocked it out!','✅ Obligation cleared!','✅ That\'s one more done!'];
+    showToast(msgs[totalCompleted%msgs.length]);
+    checkReviewNudge();
+  }
+  save();render();
+}
+function remove(id){items=items.filter(x=>x.id!==id);save();render()}
+
+/* ─── RAIN CHECK FLOW ─── */
+function openRC(id){
+  pendingRCId=id;
+  const item=items.find(x=>x.id===id);
+  document.getElementById('rc-sub').textContent='Rescheduling: '+item.title;
+  document.getElementById('rc-email').value='';
+  document.getElementById('rc-note').value='';
+  document.getElementById('rc-manual-date').value=daysOut(7);
+  document.getElementById('rc-remind').checked=true;
+  showRCStep('form');
+  document.getElementById('rc-backdrop').classList.add('open');
+}
+function closeRC(){document.getElementById('rc-backdrop').classList.remove('open');pendingRCId=null}
+function closeRCOutside(e){if(e.target===document.getElementById('rc-backdrop'))closeRC()}
+function showRCStep(step){['form','finding','slots','manual'].forEach(s=>document.getElementById('rc-step-'+s).style.display=s===step?'block':'none')}
+function rcShowManual(){showRCStep('manual')}
+function rcFindSlots(){
+  const email=document.getElementById('rc-email').value.trim();
+  if(!email){const e=document.getElementById('rc-err');e.textContent='Enter their email address';e.style.display='block';return}
+  document.getElementById('rc-err').style.display='none';
+  showRCStep('finding');
+  // Simulate finding slots (real version hits the API)
+  setTimeout(()=>{
+    const slots=generateMockSlots();
+    const list=document.getElementById('rc-slots-list');
+    list.innerHTML=slots.map((s,i)=>`<button class="slot-btn" onclick="rcPickSlot(${i},'${s.start}')"><span>${s.label}</span><span style="font-size:12px;color:#0ea5e9;font-weight:500">Pick this →</span></button>`).join('');
+    showRCStep('slots');
+  },1800);
+}
+function generateMockSlots(){
+  const slots=[];
+  const labels=['Mon 10:00 AM – 11:00 AM','Tue 2:00 PM – 3:00 PM','Wed 11:00 AM – 12:00 PM'];
+  for(let i=0;i<3;i++){const d=new Date();d.setDate(d.getDate()+i+1);slots.push({label:labels[i],start:d.toISOString().slice(0,10)})}
+  return slots;
+}
+function rcPickSlot(i,dateStr){
+  applyRainCheck(dateStr);
+  closeRC();
+}
+function rcConfirmManual(){
+  const d=document.getElementById('rc-manual-date').value;
+  applyRainCheck(d||daysOut(7));
+  closeRC();
+}
+function applyRainCheck(dateStr){
+  const item=items.find(x=>x.id===pendingRCId);
+  if(!item)return;
+  const note=document.getElementById('rc-note').value.trim();
+  const remind=document.getElementById('rc-remind').checked;
+  item.rainCheck=true;
+  item.rainNote=note||null;
+  item.rainDate=dateStr||null;
+  item.due=dateStr||item.due;
+  if(remind){
+    items.push({id:'fu'+(nextId++),title:'Follow up: '+item.title,cat:item.cat,due:daysOut(3),priority:'normal',done:false,rainCheck:false,rainNote:null,rainDate:null});
+  }
+  save();render();
+  showToast('☂️ Rain checked — rescheduled to '+formatDue(dateStr));
+}
+
+/* ─── TOAST ─── */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent='';
+  t.innerHTML=msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),3400);
+}
+
+/* ─── RENDER ─── */
+function setFilter(f){activeFilter=f;render()}
+
+function render(){
+  // Filters
+  document.getElementById('filters').innerHTML=FILTERS.map(f=>{
+    const isRain=f.k==='raincheck';
+    const isActive=activeFilter===f.k;
+    return`<button class="filter-btn${isActive?(isRain?' rain-active':' active'):''}" onclick="setFilter('${f.k}')">${f.label}</button>`;
+  }).join('');
+
+  // Stats
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('st-pending').textContent=items.filter(i=>!i.done&&!i.rainCheck).length;
+  document.getElementById('st-overdue').textContent=items.filter(i=>!i.done&&!i.rainCheck&&i.due&&i.due<today).length;
+  document.getElementById('st-rain').textContent=items.filter(i=>i.rainCheck&&!i.done).length;
+  document.getElementById('st-done').textContent=completedToday;
+
+  // Items
+  let filtered=items.filter(i=>{
+    if(activeFilter==='all')return!i.done&&!i.rainCheck;
+    if(activeFilter==='high')return i.priority==='high'&&!i.done&&!i.rainCheck;
+    if(activeFilter==='raincheck')return i.rainCheck&&!i.done;
+    return i.cat===activeFilter&&!i.done&&!i.rainCheck;
+  }).sort((a,b)=>{
+    if(a.priority==='high'&&b.priority!=='high')return -1;
+    if(b.priority==='high'&&a.priority!=='high')return 1;
+    if(a.due&&b.due)return a.due.localeCompare(b.due);
+    if(a.due)return -1;if(b.due)return 1;return 0;
+  });
+  const done=activeFilter==='all'?items.filter(i=>i.done):[];
+
+  let html='';
+  if(!filtered.length&&!done.length){
+    html='<div class="empty">Nothing here — add your first obligation above</div>';
+  } else {
+    if(filtered.length){
+      html+=activeFilter==='raincheck'?'<div class="section-label rain-label">☂️ Rain checked</div>':'<div class="section-label">Pending</div>';
+      filtered.forEach(i=>{html+=itemHTML(i)});
+    }
+    if(done.length){
+      html+='<div class="section-label" style="margin-top:1.5rem">Completed</div>';
+      done.forEach(i=>{html+=itemHTML(i)});
+    }
+  }
+  document.getElementById('list').innerHTML=html;
+}
+
+function itemHTML(i){
+  const cm=CATS[i.cat]||CATS.home;
+  const displayDue=i.rainCheck?i.rainDate:i.due;
+  const ds=dueStatus(displayDue);
+  const dueText=formatDue(displayDue);
+  const dueClass=ds==='overdue'?'overdue':ds==='soon'?'soon':'';
+  const priBadge=i.priority==='high'?'<span class="pri-badge pri-high">High</span>':i.priority==='low'?'<span class="pri-badge pri-low">Low</span>':'';
+  const rainBadge=i.rainCheck?'<span class="rain-badge">☂️ Rain check</span>':'';
+  const rainNote=i.rainCheck&&i.rainNote?`<div class="rain-note-text">"${i.rainNote}"</div>`:'';
+  const rainAction=!i.done?`<button class="action-btn action-rain" title="Rain check" onclick="openRC('${i.id}')">☂️</button>`:'';
+  // Gift badge — clickable if registry URL saved, otherwise opens gift modal
+  const giftBadge=i.hasGift
+    ? `<span style="font-size:11px;padding:2px 7px;border-radius:10px;background:#fdf2f8;color:#9d174d;font-weight:500;cursor:pointer" onclick="${i.registryUrl?`openRegistry('${i.id}')`:`openGiftModal('${i.id}',{icon:'🎁',label:'Gift',eventType:'${i.giftEvent||'gift'}'})`}" title="${i.registryUrl?'Open registry':'View gift options'}">🎁 ${i.registryUrl?'Registry →':'Gift ideas'}</span>`
+    : '';
+  // Shopping badge — reopens the shopping modal for this item's profile
+  const shopProfile=i.hasShopping&&i.shopProfile?SHOPPING_PROFILES.find(p=>p.id===i.shopProfile):null;
+  const shopBadge=shopProfile
+    ? `<button class="shop-badge-btn" onclick="openShopModal(SHOPPING_PROFILES.find(p=>p.id==='${shopProfile.id}'),'${i.id}')" title="Open shopping suggestions">${shopProfile.icon} Shop</button>`
+    : '';
+  // List badge — shows item count and opens the saved list
+  let listBadge='';
+  if(i.hasList&&i.savedList&&i.savedList.length>0){
+    const unchecked=i.savedList.filter(x=>!x.checked).length;
+    const total=i.savedList.length;
+    listBadge=`<button class="list-badge-btn" onclick="openSavedList('${i.id}')" title="Open shopping list">📋 ${unchecked}/${total} items</button>`;
+  } else if(i.hasShopping||i.shopProfile){
+    listBadge=`<button class="list-badge-btn" onclick="openListModal('${i.id}')" title="Create a shopping list" style="background:#f9f8f5;color:#666;border:1px solid #e8e5df">📋 Make a list</button>`;
+  }
+  // Dining & travel badge
+  let diningBadge='';
+  if(i.hasDining&&i.hasTravel){
+    diningBadge=`<button class="dt-badge dt-badge-dining" onclick="reopenDTModal('${i.id}')" title="Dining & travel plans">🍽️ Dining + ✈️ Travel</button>`;
+  } else if(i.hasDining){
+    diningBadge=`<button class="dt-badge dt-badge-dining" onclick="reopenDTModal('${i.id}')" title="Restaurant plans">🍽️ ${i.restaurantNote?'Rest. saved':'Find restaurant'}</button>`;
+  } else if(i.hasTravel){
+    diningBadge=`<button class="dt-badge dt-badge-travel" onclick="reopenDTModal('${i.id}')" title="Travel plans">✈️ ${i.travelNote?'Travel saved':'Plan travel'}</button>`;
+  }
+  // Work event badge
+  let workBadge='';
+  if(i.hasWork&&i.workTypes&&i.workTypes.length>0){
+    const wkIcons={flight:'✈️',hotel:'🏨',car:'🚗',dinner:'🍽️',transport:'🚕',expense:'🧾'};
+    const preview=i.workTypes.slice(0,3).map(k=>wkIcons[k]||'💼').join('');
+    workBadge=`<button class="wk-badge-btn" onclick="reopenWKModal('${i.id}')" title="Work trip planning">💼 ${preview} Planned</button>`;
+  }
+  return`<div class="item-wrap">
+    <div class="swipe-actions">
+      ${rainAction}
+      <button class="action-btn action-delete" onclick="remove('${i.id}')">×</button>
+    </div>
+    <div class="item${i.done?' done':''}${i.rainCheck?' rain-checked':''}">
+      <div class="check${i.done?' checked':''}" onclick="toggle('${i.id}')"></div>
+      <div class="item-body">
+        <div class="item-title">${i.title}</div>
+        ${rainNote}
+        <div class="item-meta">
+          <span class="cat-badge" style="background:${cm.bg};color:${cm.color}">${cm.label}</span>
+          ${dueText?`<span class="due-label ${dueClass}">${dueText}</span>`:''}
+          ${priBadge}${rainBadge}${giftBadge}${shopBadge}${listBadge}${diningBadge}${workBadge}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ─── INIT ─── */
+// ── INIT ──
+(function(){
+  if(onboardingDone){
+    // Already onboarded — hide overlay and show app immediately
+    var ob=document.getElementById('onboarding');
+    ob.classList.add('hidden');
+    ob.style.display='none';
+    document.body.style.overflow='';
+    updateStreak();
+    render();
+    showDigest();
+  } else {
+    // First time — show onboarding overlay, pre-render app behind it
+    // so it's ready the moment the overlay hides
+    render();
+  }
+})();
+
+// ── ONBOARDING BUTTON BINDING ──
+// Wire each button by ID directly — most reliable approach on all mobile browsers.
+// Each button gets both touchend (with preventDefault to skip the 300ms click delay)
+// and click (for desktop/fallback). A 500ms lock prevents double-firing.
+(function() {
+  function safeBind(id, fn) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var lock = false;
+    function fire(e) {
+      if (e.type === 'touchend') e.preventDefault();
+      if (lock) return;
+      lock = true;
+      setTimeout(function() { lock = false; }, 500);
+      fn();
+    }
+    el.addEventListener('touchend', fire, { passive: false });
+    el.addEventListener('click', fire);
+  }
+
+  safeBind('ob-btn-0', nextSlide);        // "Get started"
+  safeBind('ob-skip-0', finishOnboarding); // "Skip intro"
+  safeBind('ob-btn-1', nextSlide);        // "That's clever"
+  safeBind('ob-btn-2', finishOnboarding); // "Start with Obliga" ← was broken
+
+  // Also allow pressing Enter in the name field to proceed
+  var nameInput = document.getElementById('ob-name');
+  if (nameInput) {
+    nameInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); finishOnboarding(); }
+    });
+  }
+})();
+
+// Make all interactive elements touch-friendly
+document.querySelectorAll('button, .btn-confirm, .btn-cancel').forEach(function(el) {
+  el.style.webkitTapHighlightColor = 'transparent';
+  el.style.touchAction = 'manipulation';
+});
+
+</script>
+</body>
+</html>
